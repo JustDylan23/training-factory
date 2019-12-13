@@ -1,0 +1,16 @@
+{% extends 'content_base.html.twig' %}
+
+{% block content_body %}
+    <h2>This represents all the lessons we currently offer</h2>
+    <div class="d-flex flex-wrap">
+        {% for training in trainings %}
+            <div class="card m-3" style="width: 21rem;">
+                <img src="{{ asset(training.img) }}" height="200px" alt="{{ training.name }}">
+                <div class="card-body">
+                    <h5 class="card-title">{{ training.name }}</h5>
+                    <p class="card-text">{{ training.description }}</p>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

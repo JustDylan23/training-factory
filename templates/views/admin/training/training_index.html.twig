@@ -1,0 +1,55 @@
+{% extends 'content_base.html.twig' %}
+
+{% block content_body %}
+    <!-- Button to Open the Modal -->
+    <div class="table-responsive table-hover">
+        <div class="w-100 bg-dark text-light p-2 d-flex mt-2">
+            <h3 class="mr-auto ml-3">Trainingsaanbod</h3>
+            <a href="{{ path('app_admin_training_add') }}" class="btn btn-outline-light"><i
+                        class="fas fa-plus-circle"></i> Nieuwe training aanmaken</a>
+        </div>
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Training</th>
+                <th>Tijdsduur</th>
+                <th>Prijzen</th>
+                <th>Acties</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for training in trainings %}
+                <tr class="training">
+                    <td>{{ training.name }}</td>
+                    <td>{{ training.duration }} {{ training.duration == 1 ? 'minuut' : 'minuten' }}</td>
+                    <td>&euro; {{ training.costs }}</td>
+                    <td>
+                        <div class="dropdown">
+                            <a class="dropdown-toggle text-primary" data-toggle="dropdown">
+                                Opties
+                            </a>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item"
+                                   href="{{ path('app_admin_training_edit', {'id': training.id}) }}">
+                                    <i class="far fa-edit"></i>
+                                    Bewerken
+                                </a>
+                                <a class="dropdown-item dropdown button-remove-training"
+                                   href="{{ path('app_admin_training_remove', {'id': training.id}) }}">
+                                    <i class="far fa-trash-alt "></i>
+                                    Verwijderen
+                                </a>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('js/training_delete.js') }}"></script>
+{% endblock %}
