@@ -16,39 +16,36 @@ class UserFixture extends Fixture
         $this->passwordEncoder = $passwordEncoder;
     }
 
+    public function setDetails(User &$user): User
+    {
+        return $user->setPassword($this->passwordEncoder->encodePassword(
+            $user,
+            'login'
+        ))
+            ->setDateOfBirth(new \DateTime())
+            ->setFirstname("Dylan")
+            ->setSurnamePrepositions("van")
+            ->setSurname("Hagen")
+            ->setGender(true);
+    }
+
     public function load(ObjectManager $manager)
     {
-
         $member = new User();
-        $member
+        $this->setDetails($member)
             ->setEmail('member@mail.com')
-            ->setRoles(['ROLE_MEMBER'])
-            ->setPassword($this->passwordEncoder->encodePassword(
-                $member,
-                'login'
-            ));
+            ->setRoles(['ROLE_MEMBER']);
         $manager->persist($member);
-
         $trainer = new User();
-        $trainer
+        $this->setDetails($trainer)
             ->setEmail('trainer@mail.com')
-            ->setRoles(['ROLE_TRAINER'])
-            ->setPassword($this->passwordEncoder->encodePassword(
-                $trainer,
-                'login'
-            ));
+            ->setRoles(['ROLE_TRAINER']);
         $manager->persist($trainer);
-
         $admin = new User();
-        $admin
+        $this->setDetails($admin)
             ->setEmail('admin@mail.com')
-            ->setRoles(['ROLE_ADMIN'])
-            ->setPassword($this->passwordEncoder->encodePassword(
-                $admin,
-                'login'
-            ));
+            ->setRoles(['ROLE_ADMIN']);
         $manager->persist($admin);
-
         $manager->flush();
     }
 }

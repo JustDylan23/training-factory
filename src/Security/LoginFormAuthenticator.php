@@ -30,7 +30,6 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
 
     private $passwordEncoder;
 
-    // services are autowired through the constructor
     public function __construct(UserRepository $userRepository, RouterInterface $router, CsrfTokenManagerInterface $csrfTokenManager, UserPasswordEncoderInterface $passwordEncoder)
     {
         $this->userRepository = $userRepository;
@@ -39,10 +38,10 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
         $this->passwordEncoder = $passwordEncoder;
     }
 
-    // check if page is authentication page
+    // checks if page is authentication page
     public function supports(Request $request)
     {
-        return $request->attributes->get('_route') === 'app_login'
+        return $request->attributes->get('_route') === 'app_security_login'
             && $request->isMethod('POST');
     }
 
@@ -63,7 +62,7 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
         return $credentials;
     }
 
-    // fetches user from database and puts it into user class
+    // fetches user and injects it
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
         $token = new CsrfToken('authenticate', $credentials['csrf_token']);
@@ -77,7 +76,7 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
         throw new CustomUserMessageAuthenticationException('Invalid credentials!');
     }
 
-    // confirm password
+    // validate password 
     public function checkCredentials($credentials, UserInterface $user)
     {
         if ($this->passwordEncoder->isPasswordValid($user, $credentials['password'])) {
@@ -86,19 +85,19 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
         throw new CustomUserMessageAuthenticationException('Invalid credentials!');
     }
 
-    // redirect on successful login
+    // redirects on successful login
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
     {
         if ($targetPath = $this->getTargetPath($request->getSession(), $providerKey)) {
             return new RedirectResponse($targetPath);
         }
 
-        return new RedirectResponse($this->router->generate('app_homepage'));
+        return new RedirectResponse($this->router->generate('app_index'));
     }
 
-    // redirect on failed login
+    // redirects on failed login
     protected function getLoginUrl()
     {
-        return $this->router->generate('app_login');
+        return $this->router->generate('app_security_login');
     }
 }

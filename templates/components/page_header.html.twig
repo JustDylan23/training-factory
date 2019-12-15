@@ -23,20 +23,20 @@
     <nav class="navbar navbar-expand-sm">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item">
-                {{ self.navLink(current, 'Home', 'app_homepage') }}
+                {{ self.navLink(current, 'Home', 'app_index') }}
             </li>
             {% if is_granted('ROLE_MEMBER') %}
-                {{ self.navLink(current, 'Signup for lessons', 'app_homepage') }}
-                {{ self.navLink(current, 'My lessons', 'app_homepage') }}
+                {{ self.navLink(current, 'Signup for lessons', 'app_index') }}
+                {{ self.navLink(current, 'My lessons', 'app_index') }}
             {% elseif is_granted('ROLE_INSTRUCTOR') %}
-                {{ self.navLink(current, 'Instructor', 'app_homepage') }}
+                {{ self.navLink(current, 'Instructor', 'app_index') }}
             {% elseif is_granted('ROLE_ADMIN') %}
                 {{ self.navLink(current, 'Instructors', 'app_admin_instructor') }}
                 {{ self.navLink(current, 'Members', 'app_admin_member') }}
                 {{ self.navLink(current, 'Training forms', 'app_admin_training') }}
             {% else %}
                 {{ self.navLink(current, 'Our lessons', 'app_public_trainings') }}
-                {{ self.navLink(current, 'Sign up', 'app_public_signup') }}
+                {{ self.navLink(current, 'Sign up', 'app_security_signup') }}
                 {{ self.navLink(current, 'Behavior rules', 'app_public_rules') }}
                 {{ self.navLink(current, 'Contact us', 'app_public_contact') }}
             {% endif %}
@@ -49,16 +49,16 @@
                         {{ app.user.email }}
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                        <a class="dropdown-item" href="{{ path('app_account') }}">
-                            <i class="fas fa-user"></i> Profiel
+                        <a class="dropdown-item" href="{{ path('app_security_account') }}">
+                            <i class="fas fa-user"></i> Profile
                         </a>
-                        <a class="dropdown-item" href="{{ path('app_logout') }}">
-                            <i class="fas fa-sign-out-alt"></i> Log uit
+                        <a class="dropdown-item" href="{{ path('app_security_logout') }}">
+                            <i class="fas fa-sign-out-alt"></i> Logout
                         </a>
                     </div>
                 </li>
             {% else %}
-                {{ self.navLink(current, 'Login', 'app_login') }}
+                {{ self.navLink(current, 'Login', 'app_security_login') }}
             {% endif %}
         </ul>
     </nav>

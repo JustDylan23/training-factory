@@ -2,5 +2,8 @@
 
 {% block content_body %}
     <h1 class="text-danger">Account</h1>
-    <p>Under construction</p>
+    {{ form_start(accountForm, {attr: {'novalidate': 'novalidate', 'autocomplete': 'off'}}) }}
+    {{ form_widget(accountForm) }}
+    <button class="btn btn-primary">Save</button>
+    {{ form_end(accountForm) }}
 {% endblock %}

@@ -5,7 +5,7 @@
     {% if error %}
         <div class="alert alert-danger">{{ error.messageKey }}</div>
     {% endif %}
-    <form action="{{ path('app_login') }}" method="post">
+    <form action="{{ path('app_security_login') }}" method="post">
         <div class="form-group">
             <label for="email">Email</label>
             <input type="text" class="form-control" id="email" name="email" value="{{ last_username }}"

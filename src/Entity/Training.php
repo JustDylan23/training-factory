@@ -40,8 +40,7 @@ class Training
     /**
      * @ORM\Column(type="decimal", precision=10, scale=2, nullable=true)
      *
-     * @Assert\NotBlank()
-     * @Assert\Positive()
+     * @Assert\Positive(message="This value should be greater than zero or empty if null")
      */
     private $costs = 0;
 
@@ -55,12 +54,12 @@ class Training
         return $this->id;
     }
 
-    public function getName(): string
+    public function getName(): ?string
     {
         return $this->name;
     }
 
-    public function setName(string $name): self
+    public function setName(?string $name): self
     {
         $this->name = $name;
 
@@ -79,12 +78,12 @@ class Training
         return $this;
     }
 
-    public function getDuration(): int
+    public function getDuration(): ?int
     {
         return $this->duration;
     }
 
-    public function setDuration(int $duration): self
+    public function setDuration(?int $duration): self
     {
         $this->duration = $duration;
 

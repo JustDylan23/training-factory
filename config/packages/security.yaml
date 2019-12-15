@@ -25,7 +25,7 @@ security:
                     - App\Security\LoginFormAuthenticator
 
             logout:
-                path: app_logout
+                path: app_security_logout
 
             remember_me:
                 secret: '%kernel.secret%'

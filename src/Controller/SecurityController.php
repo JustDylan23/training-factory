@@ -3,7 +3,9 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
 use App\Form\RegisterFormType;
+use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -13,12 +15,14 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\Security\Guard\GuardAuthenticatorHandler;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class SecurityController extends AbstractController
 {
     /**
-     * @Route("/login", name="app_login")
+     * @Route("/login", name="app_security_login")
      */
     public function login(AuthenticationUtils $authenticationUtils)
     {
@@ -35,17 +39,29 @@ class SecurityController extends AbstractController
     }
 
     /**
-     * @Route("/signup", name="app_public_signup")
+     * @Route("/signup", name="app_security_signup")
      */
-    public function signup(Request $request)
+    public function signup(Request $request, EntityManagerInterface $em, UserPasswordEncoderInterface $passwordEncoder, GuardAuthenticatorHandler $guardAuthenticatorHandler)
     {
         $form = $this->createForm(RegisterFormType::class);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->addFlash('success', 'Logged in!');
+            /** @var User $user */
+            $user = $form->getData();
+            $user->setRoles(["ROLE_MEMBER"]);
+            $user->setPassword($passwordEncoder->encodePassword($user, $user->getPassword()));
 
-            return $this->redirectToRoute('app_homepage');
+            $em->persist($user);
+            $em->flush();
+
+            $this->addFlash('success', 'Account created!');
+
+            return $guardAuthenticatorHandler->authenticateUserAndHandleSuccess(
+                $user,
+                $request
+            );
+            return $this->redirectToRoute('app_security_login');
         }
 
         return $this->render('views/security/signup.html.twig', [
@@ -55,18 +71,37 @@ class SecurityController extends AbstractController
     }
 
     /**
-     * @Route("/account", name="app_account")
+     * @Route("/account", name="app_security_account")
      * @IsGranted("ROLE_USER")
      */
-    public function account()
+    public function account(Request $request, EntityManagerInterface $em, UserPasswordEncoderInterface $passwordEncoder)
     {
+        $form = $this->createForm(RegisterFormType::class, $this->getUser());
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            /** @var User $user */
+            $user = $form->getData();
+
+            $user->setPassword($passwordEncoder->encodePassword($user, $user->getPassword()));
+
+            $em->flush();
+
+            $this->addFlash('success', 'Changed applied!');
+
+            return $this->redirectToRoute('app_security_login');
+        }
+
         return $this->render('views/security/account.html.twig', [
-            'title' => $this->getUser()->getEmail()
+            'title' => $this->getUser()->getEmail(),
+            'accountForm' => $form->createView()
         ]);
     }
 
     /**
-     * @Route("/logout", name="app_logout")
+     * Function logic is handled elsewhere
+     *
+     * @Route("/logout", name="app_security_logout")
      */
     public function logout()
     {

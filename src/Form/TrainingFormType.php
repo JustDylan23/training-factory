@@ -8,7 +8,6 @@ use App\Entity\Training;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -19,27 +18,23 @@ class TrainingFormType extends AbstractType
     {
         $builder
             ->add('name', TextType::class, [
-                'label' => 'Naam*',
-                'help' => 'Dit is de naam van de training',
-                'empty_data' => ''
+                'help' => 'This is the name of the training',
             ])
             ->add('duration', IntegerType::class, [
-                'label' => 'Tijdsduur*',
-                'help' => 'De tijdsduur word opgeslagen in minuten',
+                'help' => 'The duration will be stored in minutes',
                 'attr' => [
-                    'placeholder' => 'minuten'
+                    'placeholder' => 'minutes'
                 ]
             ])
             ->add('costs', MoneyType::class, [
-                'label' => 'Prijs*',
+                'label' => 'Price',
+                'help' => 'Leave this empty if its free',
                 'attr' => [
-                    'placeholder' => '00,00'
-                ]
+                    'placeholder' => '00,00',
+                ],
             ])
             ->add('img')
-            ->add('description', TextareaType::class, [
-                'label' => 'Beschrijving',
-            ]);
+            ->add('description');
     }
 
     public function configureOptions(OptionsResolver $resolver)

@@ -3,11 +3,14 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
+ *
+ * @UniqueEntity("email")
  */
 class User implements UserInterface
 {
@@ -21,7 +24,7 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="string", length=180, unique=true)
      *
-     * @Assert\NotBlank(message="Je bent verplicht een email in te voeren!")
+     * @Assert\NotBlank()
      */
     private $email;
 
@@ -33,12 +36,14 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="string", length=255)
      *
-     * @Assert\NotBlank(message="Je bent verplicht een wachtwoord in te voeren!")
+     * @Assert\NotBlank()
      */
     private $password;
 
     /**
      * @ORM\Column(type="string", length=255)
+     *
+     * @Assert\NotBlank()
      */
     private $firstname;
 
@@ -49,6 +54,8 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=255)
+     *
+     * @Assert\NotBlank()
      */
     private $surname;
 
@@ -59,6 +66,8 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="date")
+     *
+     * @Assert\NotBlank()
      */
     private $dateOfBirth;
 
@@ -72,7 +81,7 @@ class User implements UserInterface
         return $this->email;
     }
 
-    public function setEmail(string $email): self
+    public function setEmail(?string $email): self
     {
         $this->email = $email;
 
@@ -108,14 +117,21 @@ class User implements UserInterface
         return $this;
     }
 
+    public function addRole(string $role): self
+    {
+        $roles = $this->roles;
+        $roles[] = $role;
+        $this->roles = array_unique($roles);
+        
+        return $this;
+    }
+
     /**
      * @see UserInterface
      */
     public function getPassword()
     {
-        // TODO cleanup the ?? once issue has been resolved
-        // https://github.com/symfony/symfony/issues/34824
-        return $this->password ?? '';
+        return $this->password;
     }
 
     /**
@@ -135,7 +151,7 @@ class User implements UserInterface
         // $this->plainPassword = null;
     }
 
-    public function setPassword(string $password): self
+    public function setPassword(?string $password): self
     {
         $this->password = $password;
 
@@ -147,7 +163,7 @@ class User implements UserInterface
         return $this->firstname;
     }
 
-    public function setFirstname(string $firstname): self
+    public function setFirstname(?string $firstname): self
     {
         $this->firstname = $firstname;
 
@@ -159,7 +175,7 @@ class User implements UserInterface
         return $this->surnamePrepositions;
     }
 
-    public function setSurnamePrepositions(string $surnamePrepositions): self
+    public function setSurnamePrepositions(?string $surnamePrepositions): self
     {
         $this->surnamePrepositions = $surnamePrepositions;
 
@@ -171,7 +187,7 @@ class User implements UserInterface
         return $this->surname;
     }
 
-    public function setSurname(string $surname): self
+    public function setSurname(?string $surname): self
     {
         $this->surname = $surname;
 
@@ -195,7 +211,7 @@ class User implements UserInterface
         return $this->dateOfBirth;
     }
 
-    public function setDateOfBirth(\DateTimeInterface $dateOfBirth): self
+    public function setDateOfBirth(?\DateTimeInterface $dateOfBirth): self
     {
         $this->dateOfBirth = $dateOfBirth;
 

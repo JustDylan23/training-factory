@@ -2,17 +2,14 @@
 
 namespace App\Controller;
 
-use App\Form\RegisterFormType;
 use App\Repository\TrainingRepository;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 class PublicController extends AbstractController
 {
     /**
-     * @Route("/", name="app_homepage")
+     * @Route("/", name="app_index")
      */
     public function index(TrainingRepository $trainingRepository)
     {
