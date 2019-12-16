@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Services\UploaderHelper;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -112,5 +113,10 @@ class Training
         $this->img = $img;
 
         return $this;
+    }
+
+    public function getImagePath(): ?string
+    {
+        return UploaderHelper::TRAINING_IMAGE.'/'.$this->getImg();
     }
 }

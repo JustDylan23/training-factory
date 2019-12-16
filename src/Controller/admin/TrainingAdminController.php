@@ -7,6 +7,7 @@ namespace App\Controller\admin;
 use App\Entity\Training;
 use App\Form\TrainingFormType;
 use App\Repository\TrainingRepository;
+use App\Services\UploaderHelper;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -33,7 +34,7 @@ class TrainingAdminController extends AbstractController
     /**
      * @Route("/training/add/", name="app_admin_training_add")
      */
-    public function addTraining(Request $request, EntityManagerInterface $em)
+    public function addTraining(Request $request, EntityManagerInterface $em, UploaderHelper $uploaderHelper)
     {
         $form = $this->createForm(TrainingFormType::class);
 
@@ -42,7 +43,12 @@ class TrainingAdminController extends AbstractController
             /** @var Training $training */
             $training = $form->getData();
 
+            $uploadedfile = $form['imageFile']->getData();
 
+            if ($uploadedfile) {
+                $newFileName = $uploaderHelper->uploadArticleImage($uploadedfile);
+                $training->setImg($newFileName);
+            }
 
             $em->persist($training);
             $em->flush();
@@ -61,12 +67,19 @@ class TrainingAdminController extends AbstractController
     /**
      * @Route("/training/edit/{id}", name="app_admin_training_edit")
      */
-    public function editTraining(Training $training, Request $request, EntityManagerInterface $em)
+    public function editTraining(Training $training, Request $request, EntityManagerInterface $em, UploaderHelper $uploaderHelper)
     {
         $form = $this->createForm(TrainingFormType::class, $training);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+
+            $uploadedfile = $form['imageFile']->getData();
+
+            if ($uploadedfile) {
+                $newFileName = $uploaderHelper->uploadArticleImage($uploadedfile);
+                $training->setImg($newFileName);
+            }
 
             $em->persist($training);
             $em->flush();

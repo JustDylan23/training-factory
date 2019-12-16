@@ -2,9 +2,13 @@
 
 {% block content_body %}
     <h1>Sign up</h1>
-    {# {attr: {'novalidate': 'novalidate', 'autocomplete': 'off'}} #}
-    {{ form_start(loginForm) }}
+    {{ form_start(loginForm, {attr: {'autocomplete': 'off'}}) }}
         {{ form_widget(loginForm) }}
         <button class="btn btn-primary">Register</button>
     {{ form_end(loginForm) }}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/form.css') }}">
 {% endblock %}

@@ -1,10 +1,15 @@
 <?php
-namespace App\Service;
-use Gedmo\Sluggable\Util\Urlizer;
+
+
+namespace App\Services;
+
+
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class UploaderHelper
 {
+    const TRAINING_IMAGE = 'training_image';
+
     private $uploadsPath;
 
     public function __construct(string $uploadsPath)
@@ -14,13 +19,17 @@ class UploaderHelper
 
     public function uploadArticleImage(UploadedFile $uploadedFile): string
     {
-        $destination = $this->uploadsPath.'/article_image';
-        $originalFilename = pathinfo($uploadedFile->getClientOriginalName(), PATHINFO_FILENAME);
-        $newFilename = Urlizer::urlize($originalFilename).'-'.uniqid().'.'.$uploadedFile->guessExtension();
+        $destination = $this->uploadsPath . '/' . self::TRAINING_IMAGE;
+        $newFilename = uniqid() . '.' . $uploadedFile->guessExtension();
         $uploadedFile->move(
             $destination,
             $newFilename
         );
         return $newFilename;
+    }
+
+    public function getPublicPath(string $path)
+    {
+        return 'uploads/' . $path;
     }
 }
