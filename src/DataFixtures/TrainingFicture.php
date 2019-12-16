@@ -10,10 +10,10 @@ class TrainingFicture extends BaseFixtures
     public function loadData(ObjectManager $manager)
     {
         $this->createMany('App\Entity\Training', 8, function (Training $entity, $count) {
-            $array = ['Boxing', 'Karate', 'Running', 'Lifting'];
+            $array = ['Boxing', 'Karate', 'Running', 'Lifting', 'Swimming', 'Kickboxing', 'Springing', 'Football'];
 
             $entity
-                ->setName($array[array_rand($array, 1)])
+                ->setName($array[$count])
                 ->setCosts(rand(0, 20))
                 ->setDuration(rand(0, 30))
                 ->setImg('img/sport-' . rand(0, 2) . '.png')

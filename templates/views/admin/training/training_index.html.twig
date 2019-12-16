@@ -4,40 +4,40 @@
     <!-- Button to Open the Modal -->
     <div class="table-responsive table-hover">
         <div class="w-100 bg-dark text-light p-2 d-flex mt-2">
-            <h3 class="mr-auto ml-3">Trainingsaanbod</h3>
+            <h3 class="mr-auto ml-3">Our training forms</h3>
             <a href="{{ path('app_admin_training_add') }}" class="btn btn-outline-light"><i
-                        class="fas fa-plus-circle"></i> Nieuwe training aanmaken</a>
+                        class="fas fa-plus-circle"></i> Add new training</a>
         </div>
         <table class="table">
             <thead>
             <tr>
                 <th>Training</th>
-                <th>Tijdsduur</th>
-                <th>Prijzen</th>
-                <th>Acties</th>
+                <th>Duration</th>
+                <th>Pricing</th>
+                <th>Actions</th>
             </tr>
             </thead>
             <tbody>
             {% for training in trainings %}
                 <tr class="training">
                     <td>{{ training.name }}</td>
-                    <td>{{ training.duration }} {{ training.duration == 1 ? 'minuut' : 'minuten' }}</td>
+                    <td>{{ training.duration }} {{ training.duration == 1 ? 'minut' : 'minutes' }}</td>
                     <td>&euro; {{ training.costs }}</td>
                     <td>
                         <div class="dropdown">
                             <a class="dropdown-toggle text-primary" data-toggle="dropdown">
-                                Opties
+                                Options
                             </a>
                             <div class="dropdown-menu">
                                 <a class="dropdown-item"
                                    href="{{ path('app_admin_training_edit', {'id': training.id}) }}">
                                     <i class="far fa-edit"></i>
-                                    Bewerken
+                                    Edit
                                 </a>
                                 <a class="dropdown-item dropdown button-remove-training"
                                    href="{{ path('app_admin_training_remove', {'id': training.id}) }}">
                                     <i class="far fa-trash-alt "></i>
-                                    Verwijderen
+                                    Delete
                                 </a>
                             </div>
                         </div>

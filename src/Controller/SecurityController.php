@@ -5,6 +5,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\RegisterFormType;
+use App\Security\LoginFormAuthenticator;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
@@ -41,7 +42,7 @@ class SecurityController extends AbstractController
     /**
      * @Route("/signup", name="app_security_signup")
      */
-    public function signup(Request $request, EntityManagerInterface $em, UserPasswordEncoderInterface $passwordEncoder, GuardAuthenticatorHandler $guardAuthenticatorHandler)
+    public function signup(Request $request, EntityManagerInterface $em, UserPasswordEncoderInterface $passwordEncoder, GuardAuthenticatorHandler $authenticatorHandler, LoginFormAuthenticator $authenticator)
     {
         $form = $this->createForm(RegisterFormType::class);
 
@@ -57,11 +58,7 @@ class SecurityController extends AbstractController
 
             $this->addFlash('success', 'Account created!');
 
-            return $guardAuthenticatorHandler->authenticateUserAndHandleSuccess(
-                $user,
-                $request
-            );
-            return $this->redirectToRoute('app_security_login');
+            return $authenticatorHandler->authenticateUserAndHandleSuccess($user, $request, $authenticator, 'main');
         }
 
         return $this->render('views/security/signup.html.twig', [
@@ -74,22 +71,19 @@ class SecurityController extends AbstractController
      * @Route("/account", name="app_security_account")
      * @IsGranted("ROLE_USER")
      */
-    public function account(Request $request, EntityManagerInterface $em, UserPasswordEncoderInterface $passwordEncoder)
+    public function account(Request $request, EntityManagerInterface $em, LoginFormAuthenticator $authenticator, UserPasswordEncoderInterface $passwordEncoder, GuardAuthenticatorHandler $authenticatorHandler)
     {
         $form = $this->createForm(RegisterFormType::class, $this->getUser());
-
         $form->handleRequest($request);
+
         if ($form->isSubmitted() && $form->isValid()) {
             /** @var User $user */
             $user = $form->getData();
-
             $user->setPassword($passwordEncoder->encodePassword($user, $user->getPassword()));
-
             $em->flush();
 
             $this->addFlash('success', 'Changed applied!');
-
-            return $this->redirectToRoute('app_security_login');
+            return $authenticatorHandler->authenticateUserAndHandleSuccess($user, $request, $authenticator, 'main');
         }
 
         return $this->render('views/security/account.html.twig', [
@@ -99,7 +93,9 @@ class SecurityController extends AbstractController
     }
 
     /**
-     * Function logic is handled elsewhere
+     * Function will never get called, it only
+     * exists for its route so Symfony knows
+     * how to logout.
      *
      * @Route("/logout", name="app_security_logout")
      */
@@ -109,7 +105,6 @@ class SecurityController extends AbstractController
 
     /**
      * @Route("/migrate")
-     * @throws \Exception
      */
     public function migrate(KernelInterface $kernel)
     {
@@ -127,7 +122,6 @@ class SecurityController extends AbstractController
 
     /**
      * @Route("/fixtures")
-     * @throws \Exception
      */
     public function fixtures(KernelInterface $kernel)
     {
