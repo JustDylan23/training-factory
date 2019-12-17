@@ -102,38 +102,4 @@ class SecurityController extends AbstractController
     public function logout()
     {
     }
-
-    /**
-     * @Route("/migrate")
-     */
-    public function migrate(KernelInterface $kernel)
-    {
-        $application = new Application($kernel);
-        $application->setAutoExit(false);
-        $input = new ArrayInput([
-            'command' => 'doctrine:migrations:migrate',
-            '--no-interaction' => 'true',
-        ]);
-        $output = new BufferedOutput();
-        $application->run($input, $output);
-        $content = $output->fetch();
-        return new Response($content);
-    }
-
-    /**
-     * @Route("/fixtures")
-     */
-    public function fixtures(KernelInterface $kernel)
-    {
-        $application = new Application($kernel);
-        $application->setAutoExit(false);
-        $input = new ArrayInput([
-            'command' => 'doctrine:fixtures:load',
-            '--no-interaction' => 'true',
-        ]);
-        $output = new BufferedOutput();
-        $application->run($input, $output);
-        $content = $output->fetch();
-        return new Response($content);
-    }
 }
