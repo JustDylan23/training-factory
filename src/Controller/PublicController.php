@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Repository\TrainingRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class PublicController extends AbstractController
@@ -37,7 +38,7 @@ class PublicController extends AbstractController
 
     /**
      * @Route("/rules", name="app_public_rules")
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function rules()
     {

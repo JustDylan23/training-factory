@@ -117,6 +117,6 @@ class Training
 
     public function getImagePath(): ?string
     {
-        return UploaderHelper::TRAINING_IMAGE.'/'.$this->getImg();
+        return UploaderHelper::TRAINING_IMAGE . '/' . $this->getImg();
     }
 }

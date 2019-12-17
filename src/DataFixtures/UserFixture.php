@@ -3,6 +3,7 @@
 namespace App\DataFixtures;
 
 use App\Entity\User;
+use DateTime;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
@@ -14,19 +15,6 @@ class UserFixture extends Fixture
     public function __construct(UserPasswordEncoderInterface $passwordEncoder)
     {
         $this->passwordEncoder = $passwordEncoder;
-    }
-
-    public function setDetails(User &$user): User
-    {
-        return $user->setPassword($this->passwordEncoder->encodePassword(
-            $user,
-            'login'
-        ))
-            ->setDateOfBirth(new \DateTime())
-            ->setFirstname("Dylan")
-            ->setSurnamePrepositions("van")
-            ->setSurname("Hagen")
-            ->setGender(true);
     }
 
     public function load(ObjectManager $manager)
@@ -47,5 +35,18 @@ class UserFixture extends Fixture
             ->setRoles(['ROLE_ADMIN']);
         $manager->persist($admin);
         $manager->flush();
+    }
+
+    public function setDetails(User &$user): User
+    {
+        return $user->setPassword($this->passwordEncoder->encodePassword(
+            $user,
+            'login'
+        ))
+            ->setDateOfBirth(new DateTime())
+            ->setFirstname("Dylan")
+            ->setSurnamePrepositions("van")
+            ->setSurname("Hagen")
+            ->setGender(true);
     }
 }
