@@ -3,8 +3,9 @@
 
 namespace App\Controller\security;
 
+use App\Entity\Member;
 use App\Entity\User;
-use App\Form\RegisterFormType;
+use App\Form\MemberFormType;
 use App\Security\LoginFormAuthenticator;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -39,13 +40,12 @@ class SecurityController extends AbstractController
      */
     public function signup(Request $request, EntityManagerInterface $em, UserPasswordEncoderInterface $passwordEncoder, GuardAuthenticatorHandler $authenticatorHandler, LoginFormAuthenticator $authenticator)
     {
-        $form = $this->createForm(RegisterFormType::class);
+        $form = $this->createForm(MemberFormType::class);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            /** @var User $user */
+            /** @var Member $user */
             $user = $form->getData();
-            $user->setRoles(["ROLE_MEMBER"]);
             $user->setPassword($passwordEncoder->encodePassword($user, $user->getPassword()));
 
             $em->persist($user);
@@ -68,12 +68,13 @@ class SecurityController extends AbstractController
      */
     public function account(Request $request, EntityManagerInterface $em, LoginFormAuthenticator $authenticator, UserPasswordEncoderInterface $passwordEncoder, GuardAuthenticatorHandler $authenticatorHandler)
     {
-        $form = $this->createForm(RegisterFormType::class, $this->getUser());
+        /** @var User $user */
+        $user = $this->getUser();
+
+        $form = $this->createForm($user->getFormTypeClass(), $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            /** @var User $user */
-            $user = $form->getData();
             $user->setPassword($passwordEncoder->encodePassword($user, $user->getPassword()));
             $em->flush();
 

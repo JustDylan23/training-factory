@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Form\UserFormType;
 use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -11,9 +12,11 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  *
+ * @ORM\InheritanceType("SINGLE_TABLE")
+ *
  * @UniqueEntity("email")
  */
-class User implements UserInterface
+abstract class User implements UserInterface
 {
     /**
      * @ORM\Id()
@@ -70,7 +73,17 @@ class User implements UserInterface
      *
      * @Assert\NotBlank()
      */
-    private $dateOfBirth;
+    private $birthdate;
+
+    protected function __construct(string $role)
+    {
+        $this->setRoles([$role]);
+    }
+
+    public function getFormTypeClass()
+    {
+        return UserFormType::class;
+    }
 
     public function getId(): ?int
     {
@@ -111,18 +124,9 @@ class User implements UserInterface
         return array_unique($roles);
     }
 
-    public function setRoles(array $roles): self
+    protected function setRoles(array $roles): self
     {
         $this->roles = $roles;
-
-        return $this;
-    }
-
-    public function addRole(string $role): self
-    {
-        $roles = $this->roles;
-        $roles[] = $role;
-        $this->roles = array_unique($roles);
 
         return $this;
     }
@@ -207,14 +211,14 @@ class User implements UserInterface
         return $this;
     }
 
-    public function getDateOfBirth(): ?DateTimeInterface
+    public function getBirthdate(): ?DateTimeInterface
     {
-        return $this->dateOfBirth;
+        return $this->birthdate;
     }
 
-    public function setDateOfBirth(?DateTimeInterface $dateOfBirth): self
+    public function setBirthdate(?DateTimeInterface $birthdate): self
     {
-        $this->dateOfBirth = $dateOfBirth;
+        $this->birthdate = $birthdate;
 
         return $this;
     }

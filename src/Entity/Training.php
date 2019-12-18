@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Services\UploaderHelper;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -49,6 +51,16 @@ class Training
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $img;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Lesson", mappedBy="training", orphanRemoval=true)
+     */
+    private $lessons;
+
+    public function __construct()
+    {
+        $this->lessons = new ArrayCollection();
+    }
 
     public function getId(): int
     {
@@ -103,6 +115,11 @@ class Training
         return $this;
     }
 
+    public function getImagePath(): ?string
+    {
+        return UploaderHelper::TRAINING_IMAGE . '/' . $this->getImg();
+    }
+
     public function getImg(): ?string
     {
         return $this->img;
@@ -115,8 +132,34 @@ class Training
         return $this;
     }
 
-    public function getImagePath(): ?string
+    /**
+     * @return Collection|Lesson[]
+     */
+    public function getLessons(): Collection
     {
-        return UploaderHelper::TRAINING_IMAGE . '/' . $this->getImg();
+        return $this->lessons;
+    }
+
+    public function addLesson(Lesson $lesson): self
+    {
+        if (!$this->lessons->contains($lesson)) {
+            $this->lessons[] = $lesson;
+            $lesson->setTraining($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLesson(Lesson $lesson): self
+    {
+        if ($this->lessons->contains($lesson)) {
+            $this->lessons->removeElement($lesson);
+            // set the owning side to null (unless already changed)
+            if ($lesson->getTraining() === $this) {
+                $lesson->setTraining(null);
+            }
+        }
+
+        return $this;
     }
 }

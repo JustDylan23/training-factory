@@ -7,3 +7,4 @@
 /vendor/
 ###< symfony/framework-bundle ###
 /.idea/
+/src/Migrations
