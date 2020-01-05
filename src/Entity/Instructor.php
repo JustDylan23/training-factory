@@ -10,12 +10,6 @@ use Doctrine\ORM\Mapping as ORM;
 class Instructor extends User
 {
     const ROLE = 'ROLE_INSTRUCTOR';
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
-    private $id;
 
     /**
      * @ORM\Column(type="date")
@@ -30,11 +24,6 @@ class Instructor extends User
     public function __construct()
     {
         parent::__construct(self::ROLE);
-    }
-
-    public function getId(): ?int
-    {
-        return $this->id;
     }
 
     public function getHiringDate(): ?\DateTimeInterface

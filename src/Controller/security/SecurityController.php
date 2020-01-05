@@ -6,6 +6,8 @@ namespace App\Controller\security;
 use App\Entity\Member;
 use App\Entity\User;
 use App\Form\MemberFormType;
+use App\Form\UserFormType;
+use App\Form\UserPasswordFormType;
 use App\Security\LoginFormAuthenticator;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -71,20 +73,29 @@ class SecurityController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        $form = $this->createForm($user->getFormTypeClass(), $user);
-        $form->handleRequest($request);
+        $userForm = $this->createForm(UserFormType::class, $user);
+        $userForm->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($userForm->isSubmitted() && $userForm->isValid()) {
+            $em->flush();
+            $this->addFlash('success', 'Changed applied!');
+            return $authenticatorHandler->authenticateUserAndHandleSuccess($user, $request, $authenticator, 'main');
+        }
+
+        $userPasswordForm = $this->createForm(UserPasswordFormType::class, $user);
+        $userPasswordForm->handleRequest($request);
+
+        if ($userPasswordForm->isSubmitted() && $userPasswordForm->isValid()) {
             $user->setPassword($passwordEncoder->encodePassword($user, $user->getPassword()));
             $em->flush();
-
             $this->addFlash('success', 'Changed applied!');
             return $authenticatorHandler->authenticateUserAndHandleSuccess($user, $request, $authenticator, 'main');
         }
 
         return $this->render('views/security/account.html.twig', [
             'title' => $this->getUser()->getEmail(),
-            'accountForm' => $form->createView()
+            'userForm' => $userForm->createView(),
+            'userPasswordForm' => $userPasswordForm->createView()
         ]);
     }
 

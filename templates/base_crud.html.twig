@@ -1,0 +1,102 @@
+{% extends 'content_base.html.twig' %}
+
+{% block content_body %}
+    <div class="table-responsive table-hover">
+        <div class="w-100 bg-light p-2 mt-2 rounded border">
+            <div class="d-flex mb-2">
+                <h3 class="mr-auto ml-1">{% block crud_title %}{% endblock %}</h3>
+                <a href="{% block crud_href_add %}{% endblock %}" class="btn btn-outline-primary">
+                    <i class="fas fa-plus-circle"></i> {% block crud_add_text %}Add{% endblock %}</a>
+            </div>
+            <form>
+                <div class="input-group mb-3">
+                    <input
+                            name="search"
+                            class="form-control"
+                            value="{{ app.request.query.get('search') }}"
+                            placeholder="Search..."
+                    >
+                    <div class="input-group-append">
+                        <button type="submit"
+                                class="btn btn-outline-primary">
+                            <span class="fa fa-search"></span>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <table class="table {% block crud_table_styling %}{% endblock %}">
+            <thead>
+            <tr>
+                {% block crud_table_ths %}{% endblock %}
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for entry in pagination %}
+                <tr class="entry">
+                    {% block crud_table_entries %}{% endblock %}
+                    <td>
+                        <div class="dropdown">
+                            <a class="dropdown-toggle text-primary" data-toggle="dropdown">
+                                Options
+                            </a>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item"
+                                   href="{% block crud_href_edit %}{% endblock %}">
+                                    <i class="far fa-edit"></i>
+                                    Edit
+                                </a>
+                                <button
+                                        class="dropdown-item dropdown button-remove-entry"
+                                        data-toggle="modal"
+                                        data-target="#confirm-delete"
+                                        data-href="{% block crud_href_delete %}{% endblock %}"
+                                >
+                                    <i class="far fa-trash-alt "></i> Delete
+                                </button>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            {% else %}
+                <h1>No entries found</h1>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="d-flex px-2">
+        <div class="mr-auto">
+            showing
+            {% set perpage = pagination.getItemNumberPerPage %}
+            {% set total = pagination.getTotalItemCount %}
+            <strong>{{ perpage > total ? total : perpage }}</strong>
+            out of
+            <strong>{{ total }}</strong>
+            results
+        </div>
+        {{ knp_pagination_render(pagination) }}
+    </div>
+    <div class="modal fade" id="confirm-delete">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Confirm action</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    Please note that once you delete this item it will be lost forever. (forever is a long time)
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-danger flex-fill" data-dismiss="modal" type="button">No</button>
+                    <a class="btn btn-success flex-fill" data-dismiss="modal" href="" id="delete-confirm-button">Yes</a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('js/delete_entry.js') }}"></script>
+{% endblock %}

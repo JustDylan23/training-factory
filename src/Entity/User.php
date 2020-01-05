@@ -80,11 +80,6 @@ abstract class User implements UserInterface
         $this->setRoles([$role]);
     }
 
-    public function getFormTypeClass()
-    {
-        return UserFormType::class;
-    }
-
     public function getId(): ?int
     {
         return $this->id;

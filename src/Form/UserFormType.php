@@ -19,24 +19,33 @@ class UserFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder
-            ->add('email', EmailType::class)
-            ->add('password', RepeatedType::class, [
+        /** @var User|null $user */
+        $user = $options['data'] ?? null;
+        $isEdit = $user && $user->getId();
+
+        if (!$isEdit) {
+            $builder
+                ->add('email', EmailType::class)
+                ->add('password', RepeatedType::class, [
                 'type' => PasswordType::class,
                 'invalid_message' => 'The password fields must match.',
                 'first_options' => ['label' => 'Password'],
                 'second_options' => ['label' => 'Repeat Password'],
-            ])
+            ]);
+        }
+        $builder
             ->add('firstname')
             ->add('surnamePrepositions', TextType::class, [
                 'required' => false,
             ])
             ->add('surname')
             ->add('gender', ChoiceType::class, [
+                'placeholder' => 'Choose a gender',
                 'choices' => [
-                    'Non-binary' => null,
                     'Male' => true,
                     'Female' => false,
+                    'Other' => null,
+                    'Prefer not to say' => null,
                 ],
             ])
             ->add('birthdate', BirthdayType::class, [

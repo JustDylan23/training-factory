@@ -31,9 +31,9 @@
             {% elseif is_granted('ROLE_INSTRUCTOR') %}
                 {{ self.navLink(current, 'Instructor', 'app_index') }}
             {% elseif is_granted('ROLE_ADMIN') %}
-                {{ self.navLink(current, 'Instructors', 'app_admin_instructor') }}
-                {{ self.navLink(current, 'Members', 'app_admin_member') }}
-                {{ self.navLink(current, 'Training forms', 'app_admin_training') }}
+                {{ self.navLink(current, 'Instructors', 'app_admin_instructors') }}
+                {{ self.navLink(current, 'Members', 'app_admin_members') }}
+                {{ self.navLink(current, 'Training courses', 'app_admin_trainings') }}
             {% else %}
                 {{ self.navLink(current, 'Our lessons', 'app_public_trainings') }}
                 {{ self.navLink(current, 'Sign up', 'app_security_signup') }}

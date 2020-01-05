@@ -35,7 +35,6 @@ class TrainingFormType extends AbstractType
             ])
             ->add('costs', MoneyType::class, [
                 'label' => 'Price',
-                'help' => 'Leave this empty if its free',
                 'attr' => [
                     'placeholder' => '00,00',
                 ],
@@ -59,8 +58,9 @@ class TrainingFormType extends AbstractType
                 'required' => !$isEdit || !$training->getImg(),
                 'constraints' => $imageConstraints,
                 'attr' => [
-                    'placeholder' => 'Select a fitting   image',
-                ]
+                    'placeholder' => 'Select a fitting image',
+                ],
+                'help' => 'Max file size 2MB'
             ])
             ->add('description');
     }

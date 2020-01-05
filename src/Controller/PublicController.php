@@ -23,7 +23,7 @@ class PublicController extends AbstractController
     }
 
     /**
-     * @Route("/lessons", name="app_public_trainings")
+     * @Route("/courses", name="app_public_trainings")
      */
     public function trainings(TrainingRepository $trainingRepository)
     {

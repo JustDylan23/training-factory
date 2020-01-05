@@ -19,32 +19,13 @@ class InstructorRepository extends ServiceEntityRepository
         parent::__construct($registry, Instructor::class);
     }
 
-    // /**
-    //  * @return Instructor[] Returns an array of Instructor objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    public function getWithSearchQueryBuilder(?string $term)
     {
-        return $this->createQueryBuilder('i')
-            ->andWhere('i.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('i.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
+        $qb = $this->createQueryBuilder('i');
+        if ($term) {
+            $qb->andWhere('i.firstname LIKE :term OR i.surname LIKE :term OR i.surnamePrepositions LIKE :term')
+                ->setParameter('term', '%' . $term . '%');
+        }
+        return $qb->orderBy('i.surname', 'ASC');
     }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?Instructor
-    {
-        return $this->createQueryBuilder('i')
-            ->andWhere('i.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }

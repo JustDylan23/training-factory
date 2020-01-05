@@ -10,7 +10,7 @@ class UploaderHelper
 {
     const TRAINING_IMAGE = 'training_image';
 
-    private $uploadsPath;
+    private string $uploadsPath;
 
     public function __construct(string $uploadsPath)
     {

@@ -10,6 +10,7 @@ use App\Repository\TrainingRepository;
 use App\Services\UploaderHelper;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
+use Knp\Component\Pager\PaginatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,18 +22,26 @@ use Symfony\Component\Routing\Annotation\Route;
 class TrainingAdminController extends AbstractController
 {
     /**
-     * @Route("/training", name="app_admin_training")
+     * @Route("/training-courses", name="app_admin_trainings")
      */
-    public function trainings(TrainingRepository $trainingRepository)
+    public function index(Request $request, TrainingRepository $repository, PaginatorInterface $paginator)
     {
+        $search = $request->query->get('search');
+        $queryBuilder = $repository->getWithSearchQueryBuilder($search);
+        $pagination = $paginator->paginate(
+            $queryBuilder,
+            $request->query->getInt('page', 1),
+            10
+        );
+
         return $this->render('views/admin/training/training_index.html.twig', [
-            'title' => 'Trainingen bewerken',
-            'trainings' => $trainingRepository->findAll()
+            'title' => 'Overview training courses',
+            'pagination' => $pagination
         ]);
     }
 
     /**
-     * @Route("/training/add/", name="app_admin_training_add")
+     * @Route("/training-course/add", name="app_admin_training_add")
      */
     public function addTraining(Request $request, EntityManagerInterface $em, UploaderHelper $uploaderHelper)
     {
@@ -53,19 +62,19 @@ class TrainingAdminController extends AbstractController
             $em->persist($training);
             $em->flush();
 
-            $this->addFlash('success', 'Training form added!');
+            $this->addFlash('success', 'Training course added!');
 
-            return $this->redirectToRoute('app_admin_training');
+            return $this->redirectToRoute('app_admin_trainings');
         }
 
-        return $this->render('views/admin/training/training_add.html.twig', [
-            'title' => 'Trainingen bewerken',
-            'trainingForm' => $form->createView()
+        return $this->render('views/admin/training/training_form.html.twig', [
+            'title' => 'Add training course',
+            'form' => $form->createView()
         ]);
     }
 
     /**
-     * @Route("/training/edit/{id}", name="app_admin_training_edit")
+     * @Route("/training-course/edit/{id}", name="app_admin_training_edit")
      */
     public function editTraining(Training $training, Request $request, EntityManagerInterface $em, UploaderHelper $uploaderHelper)
     {
@@ -84,19 +93,19 @@ class TrainingAdminController extends AbstractController
             $em->persist($training);
             $em->flush();
 
-            $this->addFlash('success', 'Changed applied!');
+            $this->addFlash('success', 'Applied changes!');
 
-            return $this->redirectToRoute('app_admin_training');
+            return $this->redirectToRoute('app_admin_trainings');
         }
 
-        return $this->render('views/admin/training/training_edit.html.twig', [
-            'title' => 'Trainingen bewerken',
-            'trainingForm' => $form->createView()
+        return $this->render('views/admin/training/training_form.html.twig', [
+            'title' => 'Edit training course',
+            'form' => $form->createView()
         ]);
     }
 
     /**
-     * @Route("/training/remove/{id}", name="app_admin_training_remove", methods={"POST"})
+     * @Route("/training-course/remove/{id}", name="app_admin_training_remove", methods={"POST"})
      */
     public function removeTraining(Training $training, EntityManagerInterface $em)
     {

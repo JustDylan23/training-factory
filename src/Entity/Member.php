@@ -11,12 +11,6 @@ use Doctrine\ORM\Mapping as ORM;
 class Member extends User
 {
     const ROLE = 'ROLE_MEMBER';
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
-    private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -36,11 +30,6 @@ class Member extends User
     public function __construct()
     {
         parent::__construct(self::ROLE);
-    }
-
-    public function getId(): ?int
-    {
-        return $this->id;
     }
 
     public function getStreet(): ?string

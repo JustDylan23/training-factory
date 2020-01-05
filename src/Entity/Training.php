@@ -41,7 +41,7 @@ class Training
     private $duration;
 
     /**
-     * @ORM\Column(type="decimal", precision=10, scale=2, nullable=true)
+     * @ORM\Column(type="decimal", precision=10, scale=2)
      *
      * @Assert\Positive(message="This value should be greater than zero or empty if null")
      */

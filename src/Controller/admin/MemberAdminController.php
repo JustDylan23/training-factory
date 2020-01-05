@@ -1,12 +1,15 @@
 <?php
 
+
 namespace App\Controller\admin;
 
-use App\Entity\Instructor;
-use App\Form\InstructorFormType;
+
+use App\Entity\Member;
+use App\Form\MemberFormType;
 use App\Form\UserPasswordFormType;
-use App\Repository\InstructorRepository;
+use App\Repository\MemberRepository;
 use App\Security\LoginFormAuthenticator;
+use App\Services\UploaderHelper;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Knp\Component\Pager\PaginatorInterface;
@@ -20,12 +23,12 @@ use Symfony\Component\Security\Guard\GuardAuthenticatorHandler;
 /**
  * @IsGranted("ROLE_ADMIN")
  */
-class InstructorAdminController extends AbstractController
+class MemberAdminController extends AbstractController
 {
     /**
-     * @Route("/instructors", name="app_admin_instructors")
+     * @Route("/members", name="app_admin_members")
      */
-    public function index(InstructorRepository $repository, Request $request, PaginatorInterface $paginator)
+    public function index(Request $request, MemberRepository $repository, PaginatorInterface $paginator)
     {
         $search = $request->query->get('search');
         $queryBuilder = $repository->getWithSearchQueryBuilder($search);
@@ -34,76 +37,79 @@ class InstructorAdminController extends AbstractController
             $request->query->getInt('page', 1),
             10
         );
-        return $this->render('views/admin/instructor/instructor_index.html.twig', [
-            'title' => 'Overview instructors',
+
+        return $this->render('views/admin/member/member_index.html.twig', [
+            'title' => 'Overview members',
             'pagination' => $pagination
         ]);
     }
 
     /**
-     * @Route("/instructor/add", name="app_admin_instructor_add")
+     * @Route("/member/add", name="app_admin_member_add")
      */
-    public function addInstructor(Request $request, EntityManagerInterface $em)
+    public function addMember(Request $request, EntityManagerInterface $em, UploaderHelper $uploaderHelper)
     {
-        $form = $this->createForm(InstructorFormType::class);
+        $form = $this->createForm(MemberFormType::class);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $instructor = $form->getData();
+            /** @var Member $member */
+            $member = $form->getData();
 
-            $em->persist($instructor);
+            $em->persist($member);
             $em->flush();
 
-            $this->addFlash('success', 'Instructor added!');
-            return $this->redirectToRoute('app_admin_instructors');
+            $this->addFlash('success', 'Member added!');
+
+            return $this->redirectToRoute('app_admin_members');
         }
 
-        return $this->render('views/admin/instructor/instructor_form.html.twig', [
-            'title' => 'Add instructor',
+        return $this->render('views/admin/member/member_form.html.twig', [
+            'title' => 'Add member',
             'form' => $form->createView()
         ]);
     }
 
     /**
-     * @Route("/instructor/edit/{id}", name="app_admin_instructor_edit")
+     * @Route("/member/edit/{id}", name="app_admin_member_edit")
      */
-    public function editInstructor(Instructor $instructor, Request $request, EntityManagerInterface $em, LoginFormAuthenticator $authenticator, UserPasswordEncoderInterface $passwordEncoder, GuardAuthenticatorHandler $authenticatorHandler)
+    public function editMember(Member $member, Request $request, EntityManagerInterface $em, LoginFormAuthenticator $authenticator, UserPasswordEncoderInterface $passwordEncoder, GuardAuthenticatorHandler $authenticatorHandler)
     {
-        $userForm = $this->createForm(InstructorFormType::class, $instructor);
+        $userForm = $this->createForm(MemberFormType::class, $member);
         $userForm->handleRequest($request);
 
         if ($userForm->isSubmitted() && $userForm->isValid()) {
-            $em->persist($instructor);
+            $em->persist($member);
             $em->flush();
 
             $this->addFlash('success', 'Applied changes!');
-            return $this->redirectToRoute('app_admin_instructors');
+            return $this->redirectToRoute('app_admin_members');
         }
 
-        $userPasswordForm = $this->createForm(UserPasswordFormType::class, $instructor);
+        $userPasswordForm = $this->createForm(UserPasswordFormType::class, $member);
         $userPasswordForm->handleRequest($request);
 
         if ($userPasswordForm->isSubmitted() && $userPasswordForm->isValid()) {
-            $instructor->setPassword($passwordEncoder->encodePassword($instructor, $instructor->getPassword()));
+            $member->setPassword($passwordEncoder->encodePassword($member, $member->getPassword()));
             $em->flush();
             $this->addFlash('success', 'Changed applied!');
-            return $this->redirectToRoute('app_admin_instructors');
+            return $this->redirectToRoute('app_admin_members');
         }
 
         return $this->render('views/security/account.html.twig', [
-            'title' => 'Edit instructor',
+            'title' => 'Edit member',
             'userForm' => $userForm->createView(),
             'userPasswordForm' => $userPasswordForm->createView()
         ]);
     }
 
     /**
-     * @Route("/instructor/remove/{id}", name="app_admin_instructor_remove", methods={"POST"})
+     * @Route("/member/remove/{id}", name="app_admin_member_remove", methods={"POST"})
      */
-    public function removeInstructor(Instructor $instructor, EntityManagerInterface $em)
+    public function removeMember(Member $member, EntityManagerInterface $em)
     {
         try {
-            $em->remove($instructor);
+            $em->remove($member);
             $em->flush();
             return $this->json(['success' => true]);
         } catch (Exception $e) {

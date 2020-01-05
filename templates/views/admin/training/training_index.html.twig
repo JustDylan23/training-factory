@@ -1,55 +1,18 @@
-{% extends 'content_base.html.twig' %}
+{% extends 'base_crud.html.twig' %}
 
-{% block content_body %}
-    <!-- Button to Open the Modal -->
-    <div class="table-responsive table-hover">
-        <div class="w-100 bg-dark text-light p-2 d-flex mt-2">
-            <h3 class="mr-auto ml-3">Our training forms</h3>
-            <a href="{{ path('app_admin_training_add') }}" class="btn btn-outline-light"><i
-                        class="fas fa-plus-circle"></i> Add new training</a>
-        </div>
-        <table class="table">
-            <thead>
-            <tr>
-                <th>Training</th>
-                <th>Duration</th>
-                <th>Pricing</th>
-                <th>Actions</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for training in trainings %}
-                <tr class="training">
-                    <td>{{ training.name }}</td>
-                    <td>{{ training.duration }} {{ training.duration == 1 ? 'minut' : 'minutes' }}</td>
-                    <td>&euro; {{ training.costs }}</td>
-                    <td>
-                        <div class="dropdown">
-                            <a class="dropdown-toggle text-primary" data-toggle="dropdown">
-                                Options
-                            </a>
-                            <div class="dropdown-menu">
-                                <a class="dropdown-item"
-                                   href="{{ path('app_admin_training_edit', {'id': training.id}) }}">
-                                    <i class="far fa-edit"></i>
-                                    Edit
-                                </a>
-                                <a class="dropdown-item dropdown button-remove-training"
-                                   href="{{ path('app_admin_training_remove', {'id': training.id}) }}">
-                                    <i class="far fa-trash-alt "></i>
-                                    Delete
-                                </a>
-                            </div>
-                        </div>
-                    </td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    </div>
+{% block crud_title %}Training courses{% endblock %}
+{% block crud_table_styling %}{% endblock %}
+{% block crud_add_text %}Add training course{% endblock %}
+{% block crud_href_add %}{{ path('app_admin_training_add') }}{% endblock %}
+{% block crud_href_edit %}{{ path('app_admin_training_edit', {'id': entry.id}) }}{% endblock %}
+{% block crud_href_delete %}{{ path('app_admin_training_remove', {'id': entry.id}) }}{% endblock %}
+{% block crud_table_ths %}
+    <th>Training</th>
+    <th>Duration</th>
+    <th>Pricing</th>
 {% endblock %}
-
-{% block javascripts %}
-    {{ parent() }}
-    <script src="{{ asset('js/training_delete.js') }}"></script>
+{% block crud_table_entries %}
+    <td>{{ entry.name }}</td>
+    <td>{{ entry.duration }} {{ entry.duration == 1 ? 'minute' : 'minutes' }}</td>
+    <td>&euro; {{ entry.costs|default('00.00') }}</td>
 {% endblock %}

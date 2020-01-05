@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Training;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\ORM\QueryBuilder;
 
 /**
  * @method Training|null find($id, $lockMode = null, $lockVersion = null)
@@ -28,5 +29,15 @@ class TrainingRepository extends ServiceEntityRepository
             ->setMaxResults(3)
             ->getQuery()
             ->execute();
+    }
+
+    public function getWithSearchQueryBuilder(?string $term): QueryBuilder
+    {
+        $qb = $this->createQueryBuilder('t');
+        if ($term) {
+            $qb->andWhere('t.name LIKE :term')
+                ->setParameter('term', '%' . $term . '%');
+        }
+        return $qb->orderBy('t.name', 'ASC');
     }
 }
