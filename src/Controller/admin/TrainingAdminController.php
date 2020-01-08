@@ -34,7 +34,7 @@ class TrainingAdminController extends AbstractController
             10
         );
 
-        return $this->render('views/admin/training/training_index.html.twig', [
+        return $this->render('views/admin/training/index.html.twig', [
             'title' => 'Overview training courses',
             'pagination' => $pagination
         ]);

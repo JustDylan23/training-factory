@@ -9,7 +9,7 @@ class TrainingFixture extends BaseFixtures
 {
     public function loadData(ObjectManager $manager)
     {
-        $this->createMany('App\Entity\Training', 100, function (Training $entity, $count) {
+        $this->createMany('App\Entity\Training', 100, function (Training $entity) {
             $array = ['Boxing', 'Karate', 'Running', 'Lifting', 'Swimming', 'Kickboxing', 'Sprinting', 'Football', 'Climbing', 'Racing'];
             $entity
                 ->setName($array[rand(0, 9)])

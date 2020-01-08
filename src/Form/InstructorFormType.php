@@ -14,7 +14,6 @@ class InstructorFormType extends UserFormType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         parent::buildForm($builder, $options);
-
         $builder
             ->add('hiringDate')
             ->add('salary', MoneyType::class);
@@ -22,6 +21,7 @@ class InstructorFormType extends UserFormType
 
     public function configureOptions(OptionsResolver $resolver)
     {
+        parent::configureOptions($resolver);
         $resolver->setDefaults([
             'data_class' => Instructor::class,
         ]);

@@ -29,7 +29,7 @@ class PublicController extends AbstractController
     {
         $results = $trainingRepository->findAll();
 
-        return $this->render('views/public/trainings.html.twig', [
+        return $this->render('views/public/courses.html.twig', [
             'title' => 'Lessons',
             'trainings' => $results
         ]);

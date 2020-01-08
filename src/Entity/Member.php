@@ -72,4 +72,9 @@ class Member extends User
     {
         return MemberFormType::class;
     }
+
+    public function getAccountFormType(): string
+    {
+        return MemberFormType::class;
+    }
 }

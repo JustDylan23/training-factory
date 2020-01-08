@@ -13,7 +13,6 @@ class MemberFormType extends UserFormType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         parent::buildForm($builder, $options);
-
         $builder
             ->add('street')
             ->add('postalCode')
@@ -22,6 +21,7 @@ class MemberFormType extends UserFormType
 
     public function configureOptions(OptionsResolver $resolver)
     {
+        parent::configureOptions($resolver);
         $resolver->setDefaults([
             'data_class' => Member::class,
         ]);

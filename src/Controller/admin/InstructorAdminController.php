@@ -6,7 +6,6 @@ use App\Entity\Instructor;
 use App\Form\InstructorFormType;
 use App\Form\UserPasswordFormType;
 use App\Repository\InstructorRepository;
-use App\Security\LoginFormAuthenticator;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Knp\Component\Pager\PaginatorInterface;
@@ -15,7 +14,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
-use Symfony\Component\Security\Guard\GuardAuthenticatorHandler;
 
 /**
  * @IsGranted("ROLE_ADMIN")
@@ -34,7 +32,7 @@ class InstructorAdminController extends AbstractController
             $request->query->getInt('page', 1),
             10
         );
-        return $this->render('views/admin/instructor/instructor_index.html.twig', [
+        return $this->render('views/admin/instructor/index.html.twig', [
             'title' => 'Overview instructors',
             'pagination' => $pagination
         ]);
@@ -58,7 +56,7 @@ class InstructorAdminController extends AbstractController
             return $this->redirectToRoute('app_admin_instructors');
         }
 
-        return $this->render('views/admin/instructor/instructor_form.html.twig', [
+        return $this->render('views/security/account.html.twig', [
             'title' => 'Add instructor',
             'form' => $form->createView()
         ]);
@@ -67,7 +65,7 @@ class InstructorAdminController extends AbstractController
     /**
      * @Route("/instructor/edit/{id}", name="app_admin_instructor_edit")
      */
-    public function editInstructor(Instructor $instructor, Request $request, EntityManagerInterface $em, LoginFormAuthenticator $authenticator, UserPasswordEncoderInterface $passwordEncoder, GuardAuthenticatorHandler $authenticatorHandler)
+    public function editInstructor(Instructor $instructor, Request $request, EntityManagerInterface $em, UserPasswordEncoderInterface $passwordEncoder)
     {
         $userForm = $this->createForm(InstructorFormType::class, $instructor);
         $userForm->handleRequest($request);

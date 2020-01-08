@@ -6,7 +6,6 @@ namespace App\Controller\security;
 use App\Entity\Member;
 use App\Entity\User;
 use App\Form\MemberFormType;
-use App\Form\UserFormType;
 use App\Form\UserPasswordFormType;
 use App\Security\LoginFormAuthenticator;
 use Doctrine\ORM\EntityManagerInterface;
@@ -38,9 +37,15 @@ class SecurityController extends AbstractController
     }
 
     /**
-     * @Route("/signup", name="app_security_signup")
+     * @Route("/register", name="app_security_signup")
      */
-    public function signup(Request $request, EntityManagerInterface $em, UserPasswordEncoderInterface $passwordEncoder, GuardAuthenticatorHandler $authenticatorHandler, LoginFormAuthenticator $authenticator)
+    public function register(
+        Request $request,
+        EntityManagerInterface $em,
+        UserPasswordEncoderInterface $passwordEncoder,
+        GuardAuthenticatorHandler $authenticatorHandler,
+        LoginFormAuthenticator $authenticator
+    )
     {
         $form = $this->createForm(MemberFormType::class);
 
@@ -68,12 +73,18 @@ class SecurityController extends AbstractController
      * @Route("/account", name="app_security_account")
      * @IsGranted("ROLE_USER")
      */
-    public function account(Request $request, EntityManagerInterface $em, LoginFormAuthenticator $authenticator, UserPasswordEncoderInterface $passwordEncoder, GuardAuthenticatorHandler $authenticatorHandler)
+    public function account(
+        Request $request,
+        EntityManagerInterface $em,
+        LoginFormAuthenticator $authenticator,
+        UserPasswordEncoderInterface $passwordEncoder,
+        GuardAuthenticatorHandler $authenticatorHandler
+    )
     {
         /** @var User $user */
         $user = $this->getUser();
 
-        $userForm = $this->createForm(UserFormType::class, $user);
+        $userForm = $this->createForm($user->getAccountFormType(), $user);
         $userForm->handleRequest($request);
 
         if ($userForm->isSubmitted() && $userForm->isValid()) {

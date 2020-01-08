@@ -1,0 +1,42 @@
+{% extends 'base_crud.html.twig' %}
+{% block crud_title %}Members{% endblock %}
+{% block crud_add_text %}Add member{% endblock %}
+{% block crud_href_add %}{{ path('app_admin_member_add') }}{% endblock %}
+{% block crud_href_edit %}{{ path('app_admin_member_edit', {'id': entry.id}) }}{% endblock %}
+{% block crud_href_delete %}{{ path('app_admin_member_remove', {'id': entry.id}) }}{% endblock %}
+{% block crud_table_ths %}
+    <th>Name</th>
+    <th>Email</th>
+    <th>City</th>
+{% endblock %}
+{% block crud_table_entries %}
+    <td>
+        {% if entry.isdisabled %}
+            <span data-toggle="tooltip" title="This user is disabled!"><i class="fas fa-user-lock text-danger"></i></span>
+        {% endif %}
+        {{ entry.surname }}, {{ entry.firstname }} {{ entry.surnamePrepositions }}
+    </td>
+    <td>{{ entry.email }}</td>
+    <td>{{ entry.city }}</td>
+{% endblock %}
+
+{% block crud_table_actions %}
+    <a class="dropdown-item"
+       href="{{ path('app_admin_member_toggle_user', {'id': entry.id}) }}">
+        <i class="fas fa-exchange-alt"></i>
+        {% if entry.isdisabled %}
+            Enable user
+        {% else %}
+            Disable user
+        {% endif %}
+    </a>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        $(document).ready(function(){
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+    </script>
+{% endblock %}

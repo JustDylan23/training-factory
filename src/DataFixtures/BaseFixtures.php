@@ -5,14 +5,11 @@ namespace App\DataFixtures;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\Persistence\ObjectManager;
 use Faker\Factory;
-use Generator;
 
 abstract class BaseFixtures extends Fixture
 {
-    /** @var Generator */
     protected $faker;
-    /** @var ObjectManager */
-    private $manager;
+    private ObjectManager $manager;
 
     public function __construct()
     {

@@ -75,6 +75,11 @@ abstract class User implements UserInterface
      */
     private $birthdate;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $isDisabled = false;
+
     protected function __construct(string $role)
     {
         $this->setRoles([$role]);
@@ -216,5 +221,22 @@ abstract class User implements UserInterface
         $this->birthdate = $birthdate;
 
         return $this;
+    }
+
+    public function isDisabled(): ?bool
+    {
+        return $this->isDisabled;
+    }
+
+    public function setDisabled(bool $isDisabled): self
+    {
+        $this->isDisabled = $isDisabled;
+
+        return $this;
+    }
+
+    public function getAccountFormType(): string
+    {
+        return UserFormType::class;
     }
 }

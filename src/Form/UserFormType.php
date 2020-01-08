@@ -4,9 +4,11 @@
 namespace App\Form;
 
 
+use App\Entity\Admin;
 use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\BirthdayType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
@@ -20,8 +22,12 @@ class UserFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         /** @var User|null $user */
-        $user = $options['data'] ?? null;
+        $user = $options['data'];
         $isEdit = $user && $user->getId();
+
+        /** @var User|null $editor */
+        $editor = $options['user'];
+        $isAdmin = $editor instanceof Admin;
 
         if (!$isEdit) {
             $builder
@@ -53,12 +59,20 @@ class UserFormType extends AbstractType
                     'year' => 'Year', 'month' => 'Month', 'day' => 'Day',
                 ],
             ]);
+
+        if ($isAdmin) {
+            $builder->add('disabled', CheckboxType::class, [
+                'help' => 'When checked, you disabled the users account, to enable it uncheck it.'
+            ]);
+        }
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
             'data_class' => User::class,
+            'user' => null,
+            'data' => null,
         ]);
     }
 }

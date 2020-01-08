@@ -1,6 +1,123 @@
 {% extends 'content_base.html.twig' %}
 
 {% block content_body %}
-    <h1>Contact</h1>
-    <p>Under construction</p>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 bg-light">
+                <h3>Call us</h3>
+                <p>Personal contact with an employee. For all your questions.</p>
+                <h4>
+                    071 751 00 52
+                    <button type="button" class="btn btn-primary btn-sm btn-info" data-toggle="modal"
+                            data-target="#belinfo">
+                        <i class="fas fa-info-circle"></i>
+                    </button>
+                </h4>
+                <p class="font-italic">Today open from 08.00 to 20.00</p>
+            </div>
+            <div class="col-md-4 bg-light">
+                <h3>WhatsApp</h3>
+                <p>Fast on your phone.</p>
+                <h4>
+                    06 83 60 18 05
+                    <button type="button" class="btn btn-primary btn-sm btn-info" data-toggle="modal"
+                            data-target="#whatsappinfo">
+                        <i class="fas fa-info-circle"></i>
+                    </button>
+                </h4>
+                <p class="font-italic">Today open from 08.00 to 20.00 </p>
+            </div>
+            <div class="col-md-4 bg-light">
+                <h3>E-mail</h3>
+                <p>
+                    When you are not in a hurry feel free to email us with any questions and we will do our best to
+                    respond within 48 hours.
+                </p>
+                <p class="font-italic">Today open from 00.00 to 08.00 and 20.00 to 00.00 </p>
+            </div>
+
+        </div>
+        <div class="row mt-4">
+            <div class="col-md-4 bg-light">
+                <h3>Post</h3>
+                <p>When you want to send a letter. Do not forget the stamp.</p>
+                <p>Customer service Training Center The Hague</p>
+                <p>PO Box 444</p>
+                <p>2544 ED The Hague</p>
+            </div>
+            <div class="col-md-4 bg-light">
+                <h3>Social</h3>
+                <a class="btn btn-link" href="#">
+                    <i class="fab fa-twitter fa-2x"></i>
+                </a>
+                <a class="btn btn-link" href="#">
+                    <i class="fab fa-facebook-square fa-2x"></i>
+                </a>
+                <p class="font-italic">Today open from 08.00 to 20.00 </p>
+            </div>
+        </div>
+    </div>
+    <div class="modal" id="belinfo">
+        <div class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Info</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <h5>Calling costs</h5>
+                    <p>You only pay your usual calling costs. We do not charge extra costs.</p>
+                    <h5>Choice menu</h5>
+                    <ul>
+                        <li>
+                            Do you want to know exactly what is or is not reimbursed, or do you get money back from us, press 1.
+                        </li>
+                        <li>
+                            If you still have to pay money, press 2.
+                        </li>
+                        <li>
+                            For all other matters, press 3.
+                        </li>
+                        <li>
+                            Druk 9 voor Nederlands (Press 9 for Dutch).
+                        </li>
+                    </ul>
+                    <h5>Callback appointment</h5>
+                    <p>
+                        If the waiting time is longer than 5 minutes, you can leave your telephone number and we will call you back.
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Sluiten</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal" id="whatsappinfo">
+        <div class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Info</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <h5>​Open WhatsApp</h5>
+                    <ol>
+                        <li>
+                            Start a new chat
+                        </li>
+                        <li>
+                            Add us as a new contact
+                        </li>
+                        <li>
+                            Ask your question
+                        </li>
+                    </ol>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Sluiten</button>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}

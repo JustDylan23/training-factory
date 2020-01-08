@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use App\Form\InstructorFormType;
+use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -26,12 +28,12 @@ class Instructor extends User
         parent::__construct(self::ROLE);
     }
 
-    public function getHiringDate(): ?\DateTimeInterface
+    public function getHiringDate(): ?DateTimeInterface
     {
         return $this->hiringDate;
     }
 
-    public function setHiringDate(\DateTimeInterface $hiringDate): self
+    public function setHiringDate(DateTimeInterface $hiringDate): self
     {
         $this->hiringDate = $hiringDate;
 

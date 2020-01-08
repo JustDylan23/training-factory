@@ -5,11 +5,10 @@ namespace App\Controller\admin;
 
 
 use App\Entity\Member;
+use App\Entity\User;
 use App\Form\MemberFormType;
 use App\Form\UserPasswordFormType;
 use App\Repository\MemberRepository;
-use App\Security\LoginFormAuthenticator;
-use App\Services\UploaderHelper;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Knp\Component\Pager\PaginatorInterface;
@@ -18,7 +17,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
-use Symfony\Component\Security\Guard\GuardAuthenticatorHandler;
 
 /**
  * @IsGranted("ROLE_ADMIN")
@@ -38,7 +36,7 @@ class MemberAdminController extends AbstractController
             10
         );
 
-        return $this->render('views/admin/member/member_index.html.twig', [
+        return $this->render('views/admin/member/index.html.twig', [
             'title' => 'Overview members',
             'pagination' => $pagination
         ]);
@@ -47,7 +45,7 @@ class MemberAdminController extends AbstractController
     /**
      * @Route("/member/add", name="app_admin_member_add")
      */
-    public function addMember(Request $request, EntityManagerInterface $em, UploaderHelper $uploaderHelper)
+    public function addMember(Request $request, EntityManagerInterface $em)
     {
         $form = $this->createForm(MemberFormType::class);
 
@@ -64,7 +62,7 @@ class MemberAdminController extends AbstractController
             return $this->redirectToRoute('app_admin_members');
         }
 
-        return $this->render('views/admin/member/member_form.html.twig', [
+        return $this->render('views/security/account.html.twig', [
             'title' => 'Add member',
             'form' => $form->createView()
         ]);
@@ -73,9 +71,9 @@ class MemberAdminController extends AbstractController
     /**
      * @Route("/member/edit/{id}", name="app_admin_member_edit")
      */
-    public function editMember(Member $member, Request $request, EntityManagerInterface $em, LoginFormAuthenticator $authenticator, UserPasswordEncoderInterface $passwordEncoder, GuardAuthenticatorHandler $authenticatorHandler)
+    public function editMember(Member $member, Request $request, EntityManagerInterface $em, UserPasswordEncoderInterface $passwordEncoder)
     {
-        $userForm = $this->createForm(MemberFormType::class, $member);
+        $userForm = $this->createForm(MemberFormType::class, $member, ['user' => $this->getUser()]);
         $userForm->handleRequest($request);
 
         if ($userForm->isSubmitted() && $userForm->isValid()) {
@@ -115,5 +113,17 @@ class MemberAdminController extends AbstractController
         } catch (Exception $e) {
             return $this->json(['success' => false]);
         }
+    }
+
+    /**
+     * @Route("/toggle-user/{id}", name="app_admin_member_toggle_user")
+     */
+    public function disableUser(User $user, EntityManagerInterface $em)
+    {
+        $isDisabled = !$user->isDisabled();
+        $user->setDisabled($isDisabled);
+        $em->flush();
+
+        return $this->redirectToRoute('app_admin_members');
     }
 }
