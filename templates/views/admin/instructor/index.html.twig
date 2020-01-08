@@ -12,5 +12,5 @@
 {% block crud_table_entries %}
     <td>{{ entry.surname }}, {{ entry.firstname }} {{ entry.surnamePrepositions }}</td>
     <td>{{ entry.email }}</td>
-    <td>{{ entry.hiringDate|date("d-m-Y") }}</td>
+    <td>{{ entry.hiringDate|date("m-d-Y") }}</td>
 {% endblock %}

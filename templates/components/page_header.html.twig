@@ -29,7 +29,7 @@
                 {{ self.navLink(current, 'Signup for lessons', 'app_index') }}
                 {{ self.navLink(current, 'My lessons', 'app_index') }}
             {% elseif is_granted('ROLE_INSTRUCTOR') %}
-                {{ self.navLink(current, 'Instructor', 'app_index') }}
+                {{ self.navLink(current, 'Lessons', 'app_instructor_lessons') }}
             {% elseif is_granted('ROLE_ADMIN') %}
                 {{ self.navLink(current, 'Instructors', 'app_admin_instructors') }}
                 {{ self.navLink(current, 'Members', 'app_admin_members') }}

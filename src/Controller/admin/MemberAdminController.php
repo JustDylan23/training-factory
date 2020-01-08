@@ -10,7 +10,6 @@ use App\Form\MemberFormType;
 use App\Form\UserPasswordFormType;
 use App\Repository\MemberRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Exception;
 use Knp\Component\Pager\PaginatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -106,13 +105,10 @@ class MemberAdminController extends AbstractController
      */
     public function removeMember(Member $member, EntityManagerInterface $em)
     {
-        try {
-            $em->remove($member);
-            $em->flush();
-            return $this->json(['success' => true]);
-        } catch (Exception $e) {
-            return $this->json(['success' => false]);
-        }
+        $em->remove($member);
+        $em->flush();
+        $this->addFlash('success', 'Removed successfully');
+        return $this->redirectToRoute('app_admin_members');
     }
 
     /**
@@ -123,7 +119,9 @@ class MemberAdminController extends AbstractController
         $isDisabled = !$user->isDisabled();
         $user->setDisabled($isDisabled);
         $em->flush();
-
+        $this->addFlash('success',
+            $isDisabled ? 'Disabled user successfully' : 'Enabled user successfully'
+            );
         return $this->redirectToRoute('app_admin_members');
     }
 }

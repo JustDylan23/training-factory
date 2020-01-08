@@ -9,7 +9,6 @@ use App\Form\TrainingFormType;
 use App\Repository\TrainingRepository;
 use App\Services\UploaderHelper;
 use Doctrine\ORM\EntityManagerInterface;
-use Exception;
 use Knp\Component\Pager\PaginatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -109,12 +108,9 @@ class TrainingAdminController extends AbstractController
      */
     public function removeTraining(Training $training, EntityManagerInterface $em)
     {
-        try {
-            $em->remove($training);
-            $em->flush();
-            return $this->json(['success' => true]);
-        } catch (Exception $e) {
-            return $this->json(['success' => false]);
-        }
+        $em->remove($training);
+        $em->flush();
+        $this->addFlash('success', 'Removed successfully');
+        return $this->redirectToRoute('app_admin_trainings');
     }
 }

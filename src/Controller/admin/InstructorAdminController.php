@@ -100,12 +100,9 @@ class InstructorAdminController extends AbstractController
      */
     public function removeInstructor(Instructor $instructor, EntityManagerInterface $em)
     {
-        try {
-            $em->remove($instructor);
-            $em->flush();
-            return $this->json(['success' => true]);
-        } catch (Exception $e) {
-            return $this->json(['success' => false]);
-        }
+        $em->remove($instructor);
+        $em->flush();
+        $this->addFlash('success', 'Removed successfully');
+        return $this->redirectToRoute('app_admin_instructors');
     }
 }
