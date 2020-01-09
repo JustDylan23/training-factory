@@ -1,7 +1,7 @@
 {% extends 'base_crud.html.twig' %}
 {% block crud_title %}Planned lessons{% endblock %}
 {% block crud_add_text %}Plan new lesson{% endblock %}
-{#{% block crud_href_add %}{{ path('app_admin_training_add') }}{% endblock %}#}
+{% block crud_href_add %}{{ path('app_instructor_lesson_add') }}{% endblock %}
 {#{% block crud_href_edit %}{{ path('app_admin_training_edit', {'id': entry.id}) }}{% endblock %}#}
 {#{% block crud_href_delete %}{{ path('app_admin_training_remove', {'id': entry.id}) }}{% endblock %}#}
 {% block crud_table_ths %}

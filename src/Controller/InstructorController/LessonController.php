@@ -3,7 +3,11 @@
 
 namespace App\Controller\InstructorController;
 
+use App\Entity\Lesson;
+use App\Entity\Member;
+use App\Form\LessonFormType;
 use App\Repository\LessonRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -32,6 +36,32 @@ class LessonController extends AbstractController
         return $this->render('views/instructor/lesson/index.html.twig', [
             'title' => 'Lessons',
             'pagination' => $pagination
+        ]);
+    }
+
+    /**
+     * @Route("/lesson/add", name="app_instructor_lesson_add")
+     */
+    public function addLesson(Request $request, EntityManagerInterface $em)
+    {
+        $form = $this->createForm(LessonFormType::class);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            /** @var Lesson $lesson */
+            $lesson = $form->getData();
+
+            $em->persist($lesson);
+            $em->flush();
+
+            $this->addFlash('success', 'Lesson planned!');
+
+            return $this->redirectToRoute('app_instructor_lessons');
+        }
+
+        return $this->render('views/instructor/lesson/form.html.twig', [
+            'title' => 'Plan lesson',
+            'form' => $form->createView()
         ]);
     }
 }

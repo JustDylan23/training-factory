@@ -4,7 +4,7 @@ namespace App\Controller\admin;
 
 use App\Entity\Instructor;
 use App\Form\InstructorFormType;
-use App\Form\UserPasswordFormType;
+use App\Form\ChangePasswordType;
 use App\Repository\InstructorRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -78,7 +78,7 @@ class InstructorAdminController extends AbstractController
             return $this->redirectToRoute('app_admin_instructors');
         }
 
-        $userPasswordForm = $this->createForm(UserPasswordFormType::class, $instructor);
+        $userPasswordForm = $this->createForm(ChangePasswordType::class, $instructor);
         $userPasswordForm->handleRequest($request);
 
         if ($userPasswordForm->isSubmitted() && $userPasswordForm->isValid()) {

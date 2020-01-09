@@ -7,7 +7,7 @@ namespace App\Controller\admin;
 use App\Entity\Member;
 use App\Entity\User;
 use App\Form\MemberFormType;
-use App\Form\UserPasswordFormType;
+use App\Form\ChangePasswordType;
 use App\Repository\MemberRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
@@ -83,7 +83,7 @@ class MemberAdminController extends AbstractController
             return $this->redirectToRoute('app_admin_members');
         }
 
-        $userPasswordForm = $this->createForm(UserPasswordFormType::class, $member);
+        $userPasswordForm = $this->createForm(ChangePasswordType::class, $member);
         $userPasswordForm->handleRequest($request);
 
         if ($userPasswordForm->isSubmitted() && $userPasswordForm->isValid()) {

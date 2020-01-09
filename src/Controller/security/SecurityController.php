@@ -6,11 +6,12 @@ namespace App\Controller\security;
 use App\Entity\Member;
 use App\Entity\User;
 use App\Form\MemberFormType;
-use App\Form\UserPasswordFormType;
+use App\Form\ChangePasswordType;
 use App\Security\LoginFormAuthenticator;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
@@ -93,14 +94,15 @@ class SecurityController extends AbstractController
             return $authenticatorHandler->authenticateUserAndHandleSuccess($user, $request, $authenticator, 'main');
         }
 
-        $userPasswordForm = $this->createForm(UserPasswordFormType::class, $user);
+        $userPasswordForm = $this->createForm(ChangePasswordType::class, $user);
         $userPasswordForm->handleRequest($request);
-
         if ($userPasswordForm->isSubmitted() && $userPasswordForm->isValid()) {
-            $user->setPassword($passwordEncoder->encodePassword($user, $user->getPassword()));
-            $em->flush();
-            $this->addFlash('success', 'Changed applied!');
-            return $authenticatorHandler->authenticateUserAndHandleSuccess($user, $request, $authenticator, 'main');
+            if ($passwordEncoder->isPasswordValid($user, $userPasswordForm['oldPassword'])) {
+                $user->setPassword($passwordEncoder->encodePassword($user, $user->getPassword()));
+                $em->flush();
+                $this->addFlash('success', 'Changed applied!');
+                return $authenticatorHandler->authenticateUserAndHandleSuccess($user, $request, $authenticator, 'main');
+            }
         }
 
         return $this->render('views/security/account.html.twig', [

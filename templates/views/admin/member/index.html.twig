@@ -21,6 +21,7 @@
 {% endblock %}
 
 {% block crud_table_actions %}
+    {{ parent() }}
     <a class="dropdown-item"
        href="{{ path('app_admin_member_toggle_user', {'id': entry.id}) }}">
         <i class="fas fa-exchange-alt"></i>

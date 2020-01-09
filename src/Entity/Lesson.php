@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use DateTimeInterface;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -37,6 +39,12 @@ class Lesson
      * @ORM\JoinColumn(nullable=false)
      */
     private $training;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Instructor", inversedBy="lessons")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $instructor;
 
     public function getId(): ?int
     {
@@ -87,6 +95,18 @@ class Lesson
     public function setTraining(?training $training): self
     {
         $this->training = $training;
+
+        return $this;
+    }
+
+    public function getInstructor(): ?Instructor
+    {
+        return $this->instructor;
+    }
+
+    public function setInstructor(?Instructor $instructor): self
+    {
+        $this->instructor = $instructor;
 
         return $this;
     }

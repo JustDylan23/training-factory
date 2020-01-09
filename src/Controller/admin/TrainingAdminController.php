@@ -66,7 +66,7 @@ class TrainingAdminController extends AbstractController
             return $this->redirectToRoute('app_admin_trainings');
         }
 
-        return $this->render('views/admin/training/training_form.html.twig', [
+        return $this->render('views/admin/training/form.html.twig', [
             'title' => 'Add training course',
             'form' => $form->createView()
         ]);
@@ -97,7 +97,7 @@ class TrainingAdminController extends AbstractController
             return $this->redirectToRoute('app_admin_trainings');
         }
 
-        return $this->render('views/admin/training/training_form.html.twig', [
+        return $this->render('views/admin/training/form.html.twig', [
             'title' => 'Edit training course',
             'form' => $form->createView()
         ]);

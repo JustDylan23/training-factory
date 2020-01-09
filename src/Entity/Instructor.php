@@ -2,8 +2,9 @@
 
 namespace App\Entity;
 
-use App\Form\InstructorFormType;
 use DateTimeInterface;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -23,9 +24,15 @@ class Instructor extends User
      */
     private $salary;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Lesson", mappedBy="instructor")
+     */
+    private $lessons;
+
     public function __construct()
     {
         parent::__construct(self::ROLE);
+        $this->lessons = new ArrayCollection();
     }
 
     public function getHiringDate(): ?DateTimeInterface
@@ -48,6 +55,37 @@ class Instructor extends User
     public function setSalary(string $salary): self
     {
         $this->salary = $salary;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Lesson[]
+     */
+    public function getLessons(): Collection
+    {
+        return $this->lessons;
+    }
+
+    public function addLesson(Lesson $lesson): self
+    {
+        if (!$this->lessons->contains($lesson)) {
+            $this->lessons[] = $lesson;
+            $lesson->setInstructor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLesson(Lesson $lesson): self
+    {
+        if ($this->lessons->contains($lesson)) {
+            $this->lessons->removeElement($lesson);
+            // set the owning side to null (unless already changed)
+            if ($lesson->getInstructor() === $this) {
+                $lesson->setInstructor(null);
+            }
+        }
 
         return $this;
     }

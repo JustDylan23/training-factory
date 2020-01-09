@@ -43,20 +43,21 @@
                                 Options
                             </a>
                             <div class="dropdown-menu">
-                                <a class="dropdown-item"
-                                   href="{% block crud_href_edit %}{% endblock %}">
-                                    <i class="far fa-edit"></i>
-                                    Edit
-                                </a>
-                                <button
-                                        class="dropdown-item dropdown button-remove-entry"
-                                        data-toggle="modal"
-                                        data-target="#confirm-delete"
-                                        data-href="{% block crud_href_delete %}{% endblock %}"
-                                >
-                                    <i class="far fa-trash-alt "></i> Delete
-                                </button>
-                                {% block crud_table_actions %}{% endblock %}
+                                {% block crud_table_actions %}
+                                    <a class="dropdown-item"
+                                       href="{% block crud_href_edit %}{% endblock %}">
+                                        <i class="far fa-edit"></i>
+                                        Edit
+                                    </a>
+                                    <button
+                                            class="dropdown-item dropdown button-remove-entry"
+                                            data-toggle="modal"
+                                            data-target="#confirm-delete"
+                                            data-href="{% block crud_href_delete %}{% endblock %}"
+                                    >
+                                        <i class="far fa-trash-alt "></i> Delete
+                                    </button>
+                                {% endblock %}
                             </div>
                         </div>
                     </td>
