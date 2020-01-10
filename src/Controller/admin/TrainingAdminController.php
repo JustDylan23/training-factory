@@ -104,7 +104,7 @@ class TrainingAdminController extends AbstractController
     }
 
     /**
-     * @Route("/training-course/remove/{id}", name="app_admin_training_remove", methods={"POST"})
+     * @Route("/training-course/remove/{id}", name="app_admin_training_remove")
      */
     public function removeTraining(Training $training, EntityManagerInterface $em)
     {

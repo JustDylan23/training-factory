@@ -38,6 +38,7 @@
                 <tr class="entry">
                     {% block crud_table_entries %}{% endblock %}
                     <td>
+                        {% block crud_table_dropdown %}
                         <div class="dropdown">
                             <a class="dropdown-toggle text-primary" data-toggle="dropdown">
                                 Options
@@ -60,6 +61,7 @@
                                 {% endblock %}
                             </div>
                         </div>
+                        {% endblock %}
                     </td>
                 </tr>
             {% else %}
@@ -92,7 +94,7 @@
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-danger flex-fill" data-dismiss="modal" type="button">No</button>
-                    <a class="btn btn-success flex-fill" data-dismiss="modal" href="" id="delete-confirm-button">Yes</a>
+                    <a class="btn btn-success flex-fill" href="" id="delete-confirm-button">Yes</a>
                 </div>
             </div>
         </div>
@@ -101,5 +103,12 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script src="{{ asset('js/delete_entry.js') }}"></script>
+    <script>
+        $(document).ready(function (e) {
+            $('.button-remove-entry').click(function (e) {
+                $('#delete-confirm-button')
+                    .attr('href', $(e.currentTarget).attr('data-href'))
+            });
+        });
+    </script>
 {% endblock %}

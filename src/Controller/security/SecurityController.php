@@ -5,8 +5,9 @@ namespace App\Controller\security;
 
 use App\Entity\Member;
 use App\Entity\User;
+use App\Form\ChangePasswordFormType;
 use App\Form\MemberFormType;
-use App\Form\ChangePasswordType;
+use App\Form\model\ChangePassword;
 use App\Security\LoginFormAuthenticator;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -94,11 +95,16 @@ class SecurityController extends AbstractController
             return $authenticatorHandler->authenticateUserAndHandleSuccess($user, $request, $authenticator, 'main');
         }
 
-        $userPasswordForm = $this->createForm(ChangePasswordType::class, $user);
-        $userPasswordForm->handleRequest($request);
-        if ($userPasswordForm->isSubmitted() && $userPasswordForm->isValid()) {
-            if ($passwordEncoder->isPasswordValid($user, $userPasswordForm['oldPassword'])) {
-                $user->setPassword($passwordEncoder->encodePassword($user, $user->getPassword()));
+        $changePasswordForm = $this->createForm(ChangePasswordFormType::class);
+
+        $changePasswordForm->handleRequest($request);
+        if ($changePasswordForm->isSubmitted() && $changePasswordForm->isValid()) {
+            /** @var ChangePassword $changePassword */
+            $changePassword = $changePasswordForm->getData();
+            if (!$passwordEncoder->isPasswordValid($user, $changePassword->getOldPassword())) {
+                $changePasswordForm->get('oldPassword')->addError(new FormError('Incorrect password'));
+            } else {
+                $user->setPassword($passwordEncoder->encodePassword($user, $changePassword->getNewPassword()));
                 $em->flush();
                 $this->addFlash('success', 'Changed applied!');
                 return $authenticatorHandler->authenticateUserAndHandleSuccess($user, $request, $authenticator, 'main');
@@ -108,7 +114,7 @@ class SecurityController extends AbstractController
         return $this->render('views/security/account.html.twig', [
             'title' => $this->getUser()->getEmail(),
             'userForm' => $userForm->createView(),
-            'userPasswordForm' => $userPasswordForm->createView()
+            'userPasswordForm' => $changePasswordForm->createView()
         ]);
     }
 

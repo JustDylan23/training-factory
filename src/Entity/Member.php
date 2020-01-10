@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Form\MemberFormType;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -27,9 +29,15 @@ class Member extends User
      */
     private $city;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Registration", mappedBy="member", orphanRemoval=true)
+     */
+    private $registrations;
+
     public function __construct()
     {
         parent::__construct(self::ROLE);
+        $this->registrations = new ArrayCollection();
     }
 
     public function getStreet(): ?string
@@ -76,5 +84,36 @@ class Member extends User
     public function getAccountFormType(): string
     {
         return MemberFormType::class;
+    }
+
+    /**
+     * @return Collection|Registration[]
+     */
+    public function getRegistrations(): Collection
+    {
+        return $this->registrations;
+    }
+
+    public function addRegistration(Registration $registration): self
+    {
+        if (!$this->registrations->contains($registration)) {
+            $this->registrations[] = $registration;
+            $registration->setMember($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRegistration(Registration $registration): self
+    {
+        if ($this->registrations->contains($registration)) {
+            $this->registrations->removeElement($registration);
+            // set the owning side to null (unless already changed)
+            if ($registration->getMember() === $this) {
+                $registration->setMember(null);
+            }
+        }
+
+        return $this;
     }
 }

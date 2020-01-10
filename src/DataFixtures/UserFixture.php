@@ -21,31 +21,27 @@ class UserFixture extends BaseFixtures
 
     public function loadData(ObjectManager $manager)
     {
-        for ($i = 0; $i < 20; $i++) {
-            $member = new Member();
+        $this->createMany(Member::class, 20, function (Member $member, int $count) {
             $member
                 ->setStreet($this->faker->streetName)
                 ->setCity($this->faker->city)
                 ->setPostalCode($this->faker->postcode);
 
             $this->setDetails($member)
-                ->setEmail("member$i@mail.com");
-            $manager->persist($member);
-
-            $instructor = new Instructor();
+                ->setEmail("member$count@mail.com");
+        });
+        $this->createMany(Instructor::class, 20, function (Instructor $instructor, int $count) {
             $instructor
                 ->setHiringDate($this->faker->dateTimeBetween($startDate = '-10 years', $endDate = 'now'))
                 ->setSalary($this->faker->numberBetween(1000, 3000));
 
             $this->setDetails($instructor)
-                ->setEmail("trainer$i@mail.com");
-            $manager->persist($instructor);
-        }
-
-        $admin = new Admin();
-        $this->setDetails($admin)
-            ->setEmail('admin@mail.com');
-        $manager->persist($admin);
+                ->setEmail("trainer$count@mail.com");
+        });
+        $this->createMany(Admin::class, 20, function (Admin $admin, int $count) {
+            $this->setDetails($admin)
+                ->setEmail("admin$count@mail.com");
+        });
         $manager->flush();
     }
 

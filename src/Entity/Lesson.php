@@ -6,6 +6,7 @@ use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\LessonRepository")
@@ -21,21 +22,27 @@ class Lesson
 
     /**
      * @ORM\Column(type="datetime")
+     *
+     * @Assert\NotBlank()
      */
     private $time;
 
     /**
      * @ORM\Column(type="string", length=255)
+     *
+     * @Assert\NotBlank()
      */
     private $location;
 
     /**
      * @ORM\Column(type="integer")
+     *
+     * @Assert\NotBlank()
      */
-    private $max_people;
+    private $maxPeople;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\training", inversedBy="lessons")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Training", inversedBy="lessons")
      * @ORM\JoinColumn(nullable=false)
      */
     private $training;
@@ -45,6 +52,16 @@ class Lesson
      * @ORM\JoinColumn(nullable=false)
      */
     private $instructor;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Registration", mappedBy="lesson", orphanRemoval=true)
+     */
+    private $registrations;
+
+    public function __construct()
+    {
+        $this->registrations = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -77,12 +94,12 @@ class Lesson
 
     public function getMaxPeople(): ?int
     {
-        return $this->max_people;
+        return $this->maxPeople;
     }
 
-    public function setMaxPeople(?int $max_people): self
+    public function setMaxPeople(?int $maxPeople): self
     {
-        $this->max_people = $max_people;
+        $this->maxPeople = $maxPeople;
 
         return $this;
     }
@@ -107,6 +124,37 @@ class Lesson
     public function setInstructor(?Instructor $instructor): self
     {
         $this->instructor = $instructor;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Registration[]
+     */
+    public function getRegistrations(): Collection
+    {
+        return $this->registrations;
+    }
+
+    public function addRegistration(Registration $registration): self
+    {
+        if (!$this->registrations->contains($registration)) {
+            $this->registrations[] = $registration;
+            $registration->setLesson($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRegistration(Registration $registration): self
+    {
+        if ($this->registrations->contains($registration)) {
+            $this->registrations->removeElement($registration);
+            // set the owning side to null (unless already changed)
+            if ($registration->getLesson() === $this) {
+                $registration->setLesson(null);
+            }
+        }
 
         return $this;
     }

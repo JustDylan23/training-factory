@@ -4,10 +4,8 @@ namespace App\Controller\admin;
 
 use App\Entity\Instructor;
 use App\Form\InstructorFormType;
-use App\Form\ChangePasswordType;
 use App\Repository\InstructorRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Exception;
 use Knp\Component\Pager\PaginatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -67,10 +65,10 @@ class InstructorAdminController extends AbstractController
      */
     public function editInstructor(Instructor $instructor, Request $request, EntityManagerInterface $em, UserPasswordEncoderInterface $passwordEncoder)
     {
-        $userForm = $this->createForm(InstructorFormType::class, $instructor);
-        $userForm->handleRequest($request);
+        $form = $this->createForm(InstructorFormType::class, $instructor, ['user' => $this->getUser()]);
+        $form->handleRequest($request);
 
-        if ($userForm->isSubmitted() && $userForm->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $em->persist($instructor);
             $em->flush();
 
@@ -78,25 +76,14 @@ class InstructorAdminController extends AbstractController
             return $this->redirectToRoute('app_admin_instructors');
         }
 
-        $userPasswordForm = $this->createForm(ChangePasswordType::class, $instructor);
-        $userPasswordForm->handleRequest($request);
-
-        if ($userPasswordForm->isSubmitted() && $userPasswordForm->isValid()) {
-            $instructor->setPassword($passwordEncoder->encodePassword($instructor, $instructor->getPassword()));
-            $em->flush();
-            $this->addFlash('success', 'Changed applied!');
-            return $this->redirectToRoute('app_admin_instructors');
-        }
-
-        return $this->render('views/security/account.html.twig', [
+        return $this->render('views/admin/instructor/form.html.twig', [
             'title' => 'Edit instructor',
-            'userForm' => $userForm->createView(),
-            'userPasswordForm' => $userPasswordForm->createView()
+            'form' => $form->createView(),
         ]);
     }
 
     /**
-     * @Route("/instructor/remove/{id}", name="app_admin_instructor_remove", methods={"POST"})
+     * @Route("/instructor/remove/{id}", name="app_admin_instructor_remove")
      */
     public function removeInstructor(Instructor $instructor, EntityManagerInterface $em)
     {

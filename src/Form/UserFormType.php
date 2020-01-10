@@ -16,6 +16,8 @@ use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class UserFormType extends AbstractType
 {
@@ -29,15 +31,23 @@ class UserFormType extends AbstractType
         $editor = $options['user'];
         $isAdmin = $editor instanceof Admin;
 
+        $builder->add('email', EmailType::class, [
+            'disabled' => $isEdit && !$isAdmin
+        ]);
         if (!$isEdit) {
             $builder
-                ->add('email', EmailType::class)
                 ->add('password', RepeatedType::class, [
-                'type' => PasswordType::class,
-                'invalid_message' => 'The password fields must match.',
-                'first_options' => ['label' => 'Password'],
-                'second_options' => ['label' => 'Repeat Password'],
-            ]);
+                    'type' => PasswordType::class,
+                    'constraints' => [
+                        new Length([
+                            'min' => 6
+                        ]),
+                        new NotBlank()
+                    ],
+                    'invalid_message' => 'The password fields must match.',
+                    'first_options' => ['label' => 'Password'],
+                    'second_options' => ['label' => 'Repeat Password'],
+                ]);
         }
         $builder
             ->add('firstname')
@@ -59,6 +69,7 @@ class UserFormType extends AbstractType
                     'year' => 'Year', 'month' => 'Month', 'day' => 'Day',
                 ],
             ]);
+
 
         if ($isAdmin) {
             $builder->add('disabled', CheckboxType::class, [

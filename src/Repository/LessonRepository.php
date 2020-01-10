@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Lesson;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 
@@ -21,11 +22,40 @@ class LessonRepository extends ServiceEntityRepository
 
     public function getWithSearchQueryBuilder(?string $term)
     {
-        $qb = $this->createQueryBuilder('l');
+        $qb = $this->createQueryBuilder('l')
+            ->innerJoin('l.training', 't')
+            ->addSelect('t');
         if ($term) {
             $qb->andWhere($qb->expr()->like('t.name', ':term'))
                 ->andWhere($qb->expr()->gt('CURRENT_DATE()', 'l.time'))
-                ->innerJoin('l.training', 't', )
+                ->setParameter('term', '%' . $term . '%');
+        }
+        return $qb->orderBy('l.time', 'ASC');
+    }
+
+    public function getWithSearchQueryBuilderAndSignedUp(?string $term, User $member)
+    {
+        $qb = $this->createQueryBuilder('l')
+            ->innerJoin('l.training', 't')
+            ->innerJoin('l.registrations', 'r')
+            ->andWhere('r.member = :member')
+            ->setParameter('member', $member->getId())
+            ->addSelect('t');
+        if ($term) {
+            $qb->andWhere($qb->expr()->like('t.name', ':term'))
+                ->andWhere($qb->expr()->gt('CURRENT_DATE()', 'l.time'))
+                ->setParameter('term', '%' . $term . '%');
+        }
+        return $qb->orderBy('l.time', 'ASC');
+    }
+
+    public function getWithSearchQueryBuilderAndNotSignedUp(?string $term, User $member)
+    {
+        $qb = $this->createQueryBuilder('l')
+            ->innerJoin('l.training', 't');
+        if ($term) {
+            $qb->andWhere($qb->expr()->like('t.name', ':term'))
+                ->andWhere($qb->expr()->gt('CURRENT_DATE()', 'l.time'))
                 ->setParameter('term', '%' . $term . '%');
         }
         return $qb->orderBy('l.time', 'ASC');

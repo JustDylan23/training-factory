@@ -25,7 +25,7 @@ class Instructor extends User
     private $salary;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Lesson", mappedBy="instructor")
+     * @ORM\OneToMany(targetEntity="App\Entity\Lesson", mappedBy="instructor", orphanRemoval=true)
      */
     private $lessons;
 

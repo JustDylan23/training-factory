@@ -5,10 +5,11 @@ namespace App\DataFixtures;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\Persistence\ObjectManager;
 use Faker\Factory;
+use Faker\Generator;
 
 abstract class BaseFixtures extends Fixture
 {
-    protected $faker;
+    protected Generator $faker;
     private ObjectManager $manager;
 
     public function __construct()
@@ -32,8 +33,12 @@ abstract class BaseFixtures extends Fixture
             $factory($entity, $i);
 
             $this->manager->persist($entity);
-            // store for usage later as App\Entity\ClassName_#COUNT#
             $this->addReference($className . '_' . $i, $entity);
         }
+    }
+
+    public function getReferenceByClass($className, int $count): object
+    {
+        return $this->getReference($className . '_' . $count);
     }
 }

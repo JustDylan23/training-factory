@@ -26,8 +26,9 @@
                 {{ self.navLink(current, 'Home', 'app_index') }}
             </li>
             {% if is_granted('ROLE_MEMBER') %}
-                {{ self.navLink(current, 'Signup for lessons', 'app_index') }}
-                {{ self.navLink(current, 'My lessons', 'app_index') }}
+                {{ self.navLink(current, 'Sign up for lessons', 'app_member_signup') }}
+                {{ self.navLink(current, 'My lessons', 'app_member_lessons') }}
+                {{ self.navLink(current, 'Our lessons', 'app_public_trainings') }}
             {% elseif is_granted('ROLE_INSTRUCTOR') %}
                 {{ self.navLink(current, 'Lessons', 'app_instructor_lessons') }}
             {% elseif is_granted('ROLE_ADMIN') %}
@@ -55,6 +56,15 @@
                         <a class="dropdown-item" href="{{ path('app_security_logout') }}">
                             <i class="fas fa-sign-out-alt"></i> Logout
                         </a>
+                        {% if is_granted('ROLE_ADMIN') %}
+                        <button
+                                class="dropdown-item dropdown button-remove-entry"
+                                data-toggle="modal"
+                                data-target="#switch-user"
+                        >
+                            <i class="fas fa-exchange-alt"></i> Switch User
+                        </button>
+                        {% endif %}
                     </div>
                 </li>
             {% else %}
@@ -62,4 +72,23 @@
             {% endif %}
         </ul>
     </nav>
+    {% if is_granted('ROLE_ADMIN') %}
+    <div class="modal fade" id="switch-user">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <div class="form-group">
+                                <label for="switch-user-form">Email of targeted account:</label>
+                                <input id="switch-user-form" required type="text" class="form-control" name="_switch_user">
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-block">Switch</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
 </header>

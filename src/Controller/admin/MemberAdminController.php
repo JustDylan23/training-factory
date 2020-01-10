@@ -7,7 +7,6 @@ namespace App\Controller\admin;
 use App\Entity\Member;
 use App\Entity\User;
 use App\Form\MemberFormType;
-use App\Form\ChangePasswordType;
 use App\Repository\MemberRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
@@ -70,12 +69,12 @@ class MemberAdminController extends AbstractController
     /**
      * @Route("/member/edit/{id}", name="app_admin_member_edit")
      */
-    public function editMember(Member $member, Request $request, EntityManagerInterface $em, UserPasswordEncoderInterface $passwordEncoder)
+    public function editMember(Member $member, Request $request, EntityManagerInterface $em)
     {
-        $userForm = $this->createForm(MemberFormType::class, $member, ['user' => $this->getUser()]);
-        $userForm->handleRequest($request);
+        $form = $this->createForm(MemberFormType::class, $member, ['user' => $this->getUser()]);
+        $form->handleRequest($request);
 
-        if ($userForm->isSubmitted() && $userForm->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $em->persist($member);
             $em->flush();
 
@@ -83,25 +82,14 @@ class MemberAdminController extends AbstractController
             return $this->redirectToRoute('app_admin_members');
         }
 
-        $userPasswordForm = $this->createForm(ChangePasswordType::class, $member);
-        $userPasswordForm->handleRequest($request);
-
-        if ($userPasswordForm->isSubmitted() && $userPasswordForm->isValid()) {
-            $member->setPassword($passwordEncoder->encodePassword($member, $member->getPassword()));
-            $em->flush();
-            $this->addFlash('success', 'Changed applied!');
-            return $this->redirectToRoute('app_admin_members');
-        }
-
-        return $this->render('views/security/account.html.twig', [
+        return $this->render('views/admin/member/form.html.twig', [
             'title' => 'Edit member',
-            'userForm' => $userForm->createView(),
-            'userPasswordForm' => $userPasswordForm->createView()
+            'form' => $form->createView(),
         ]);
     }
 
     /**
-     * @Route("/member/remove/{id}", name="app_admin_member_remove", methods={"POST"})
+     * @Route("/member/remove/{id}", name="app_admin_member_remove")
      */
     public function removeMember(Member $member, EntityManagerInterface $em)
     {
