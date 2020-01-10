@@ -7,7 +7,6 @@ use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\Query\Expr\Join;
-use function Doctrine\ORM\QueryBuilder;
 
 /**
  * @method Lesson|null find($id, $lockMode = null, $lockVersion = null)
@@ -51,25 +50,19 @@ class LessonRepository extends ServiceEntityRepository
         return $qb->orderBy('l.time', 'ASC');
     }
 
-    /*
-     * SELECT * FROM lesson
-     * LEFT JOIN registration
-     * ON registration.lesson_id = lesson.id AND registration.member_id = 42
-     * WHERE registration.lesson_id IS NULL
-     */
     public function getWithSearchQueryBuilderAndNotSignedUp(?string $term, User $member)
     {
-        $qb = $this->createQueryBuilder('l')
-            ->innerJoin('l.training', 't')
-            ->addSelect('t');
-        $qb->leftJoin('l.registrations', 'r', Join::WITH, $qb->expr()->eq('r.member', 42));
-        return $qb;
-
-//        if ($term) {
-//            $qb->andWhere($qb->expr()->like('t.name', ':term'))
-//                ->andWhere($qb->expr()->gt('CURRENT_DATE()', 'l.time'))
-//                ->setParameter('term', '%' . $term . '%');
-//        }
-//        return $qb->orderBy('l.time', 'ASC');
+        $qb = $this->createQueryBuilder('l');
+        $qb->innerJoin('l.training', 't')
+            ->addSelect('t')
+            ->leftJoin('l.registrations', 'r', Join::WITH, 'r.member = :member')
+            ->where('r.lesson is null')
+            ->setParameter('member', $member->getId());
+        if ($term) {
+            $qb->andWhere($qb->expr()->like('t.name', ':term'))
+                ->andWhere($qb->expr()->gt('CURRENT_DATE()', 'l.time'))
+                ->setParameter('term', '%' . $term . '%');
+        }
+        return $qb->orderBy('l.time', 'ASC');
     }
 }

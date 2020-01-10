@@ -15,7 +15,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @IsGranted("ROLE_MEMBER")
+ * @IsGranted("IS_AUTHENTICATED_REMEMBERED")
  */
 class LessonController extends AbstractController
 {
@@ -49,7 +49,7 @@ class LessonController extends AbstractController
 
         $em->persist($registration);
         $em->flush();
-        $this->addFlash('success', 'Signed out of lesson');
+        $this->addFlash('success', 'Signed up for ' . $lesson);
         return $this->redirectToRoute('app_member_lessons');
     }
 
