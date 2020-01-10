@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Controller\instructor;
+namespace App\Controller\Instructor;
 
 use App\Entity\Lesson;
 use App\Entity\Member;

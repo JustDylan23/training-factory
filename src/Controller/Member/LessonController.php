@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Controller\member;
+namespace App\Controller\Member;
 
 use App\Entity\Lesson;
 use App\Entity\Registration;
@@ -26,6 +26,7 @@ class LessonController extends AbstractController
     {
         $search = $request->query->get('search');
         $queryBuilder = $repository->getWithSearchQueryBuilderAndNotSignedUp($search, $this->getUser());
+//        dd($queryBuilder->getDQL());
         $pagination = $paginator->paginate(
             $queryBuilder,
             $request->query->getInt('page', 1),

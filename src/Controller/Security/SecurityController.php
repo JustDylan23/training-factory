@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Controller\security;
+namespace App\Controller\Security;
 
 use App\Entity\Member;
 use App\Entity\User;
