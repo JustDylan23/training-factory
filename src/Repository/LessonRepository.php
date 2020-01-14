@@ -50,14 +50,31 @@ class LessonRepository extends ServiceEntityRepository
         return $qb->orderBy('l.time', 'ASC');
     }
 
+    /*
+     * SELECT t.name, t.duration, l.location, l.time, COUNT(r_count.lesson_id) AS relations, l.max_people as max_relations
+     * FROM lesson as l
+     * INNER JOIN training AS t
+     * ON t.id = l.training_id
+     * LEFT JOIN registration AS r
+     * ON r.lesson_id = l.id AND r.member_id = 42
+     * LEFT JOIN registration as r_count
+     * ON l.id = r_count.lesson_id
+     * WHERE r.lesson_id is null
+     * GROUP BY l.id
+     * ORDER BY l.time ASC
+     */
     public function getWithSearchQueryBuilderAndNotSignedUp(?string $term, User $member)
     {
-        $qb = $this->createQueryBuilder('l');
-        $qb->innerJoin('l.training', 't')
-            ->addSelect('t')
+        $qb = $this->createQueryBuilder('l')
+            ->select('l.id, l.location, l.time, l.maxPeople as max_relations')
+            ->innerJoin('l.training', 't')
+            ->addSelect('t.name, t.duration')
             ->leftJoin('l.registrations', 'r', Join::WITH, 'r.member = :member')
             ->where('r.lesson is null')
-            ->setParameter('member', $member->getId());
+            ->setParameter('member', $member->getId())
+            ->leftJoin('l.registrations', 'r_count')
+            ->addSelect('COUNT(r_count.lesson) AS relations')
+            ->groupBy('l.id');
         if ($term) {
             $qb->andWhere($qb->expr()->like('t.name', ':term'))
                 ->andWhere($qb->expr()->gt('CURRENT_DATE()', 'l.time'))

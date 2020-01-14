@@ -5,11 +5,13 @@
         <div class="w-100 bg-light p-2 mt-2 rounded border">
             <div class="d-flex mb-2">
                 <h3 class="mr-auto ml-1">{% block crud_title %}{% endblock %}</h3>
-                <a href="{% block crud_href_add %}{% endblock %}" class="btn btn-outline-primary">
-                    <i class="fas fa-plus-circle"></i> {% block crud_add_text %}Add{% endblock %}</a>
+                {% block crud_add_button %}
+                    <a href="{% block crud_href_add %}{% endblock %}" class="btn btn-outline-primary">
+                        <i class="fas fa-plus-circle"></i> {% block crud_add_text %}Add{% endblock %}</a>
+                {% endblock %}
             </div>
-            <form>
-                <div class="input-group mb-3">
+            <form class="pb-3">
+                <div class="input-group">
                     <input
                             name="search"
                             class="form-control"
@@ -23,6 +25,7 @@
                         </button>
                     </div>
                 </div>
+                {% block crud_search_form_append %}{% endblock %}
             </form>
         </div>
         <table class="table {% block crud_table_styling %}{% endblock %}">

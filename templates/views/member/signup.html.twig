@@ -1,23 +1,50 @@
 {% extends 'base_crud.html.twig' %}
 {% block crud_title %}Available lessons{% endblock %}
+{% block crud_add_button %}{% endblock %}
 {% block crud_table_ths %}
     <th>Training course</th>
     <th>Duration</th>
     <th>Location</th>
     <th>Time</th>
+    <th>Open spots</th>
+    <th>Max participants</th>
 {% endblock %}
 
 {% block crud_table_entries %}
-    {# @var entry \App\Entity\Lesson #}
-    <td>{{ entry.training.name }}</td>
-    <td>{{ entry.training.duration }} {{ entry.training.duration == 1 ? 'minute' : 'minutes' }}</td>
+    <td>{{ entry.name }}</td>
+    <td>{{ entry.duration }} {{ entry.duration == 1 ? 'minute' : 'minutes' }}</td>
     <td>{{ entry.location }}</td>
-    <td>{{ entry.time|date("n-d-Y H:i") }}-{{ entry.time|date_modify("+" ~ entry.training.duration ~ 'minutes')|date("H:i") }}</td>
+    <td>{{ entry.time|date("n-d-Y H:i") }}
+        -{{ entry.time|date_modify("+" ~ entry.duration ~ 'minutes')|date("H:i") }}</td>
+    <td>{{ entry.max_relations - entry.relations }}</td>
+    <td>{{ entry.max_relations }}</td>
 {% endblock %}
 
 {% block crud_table_dropdown %}
-    <a class="btn btn-success"
+    <a class="btn btn-success{{ entry.relations >= entry.max_relations ? 'disabled' }}"
        href="{{ path('app_member_lesson_signup', {'id': entry.id}) }}">
         <i class="fas fa-sign-out-alt"></i> Sign up
     </a>
+{% endblock %}
+
+{% block crud_search_form_append %}
+    <button class="btn btn-outline-primary mt-2" data-target="#demo" data-toggle="collapse" type="button">Show search
+        options
+    </button>
+
+    <div id="demo" class="collapse">
+        <div class="form-check mt-2">
+            <input checked="{{ app.request.query.get('showFull') }}" class="form-check-input" id="showFull" value="true" name="showFull" type="checkbox">
+            <label for="showFull">Show lessons that are full</label>
+        </div>
+        <div class="form-inline">
+            <label for="startDate">Starting from</label>
+            <input class="form-control ml-2"
+                   id="startDate"
+                   name="startDate"
+                   required
+                   type="datetime-local"
+                   value="{{ app.request.query.get('startDate')|default('now'|date("Y-m-d\\TH:i")) }}">
+        </div>
+    </div>
 {% endblock %}

@@ -26,7 +26,6 @@ class LessonController extends AbstractController
     {
         $search = $request->query->get('search');
         $queryBuilder = $repository->getWithSearchQueryBuilderAndNotSignedUp($search, $this->getUser());
-//        dd($queryBuilder->getDQL());
         $pagination = $paginator->paginate(
             $queryBuilder,
             $request->query->getInt('page', 1),
