@@ -8,6 +8,8 @@ use App\Entity\Member;
 use App\Form\LessonFormType;
 use App\Form\MemberFormType;
 use App\Repository\LessonRepository;
+use App\Repository\MemberRepository;
+use App\Repository\RegistrationRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -70,9 +72,9 @@ class LessonController extends AbstractController
     }
 
     /**
-     * @Route("/lesson/edit/{id}", name="app_admin_lesson_edit")
+     * @Route("/lesson/edit/{id}", name="app_instructor_lesson_edit")
      */
-    public function editMember(Lesson $lesson, Request $request, EntityManagerInterface $em)
+    public function editLesson(Lesson $lesson, Request $request, EntityManagerInterface $em)
     {
         $form = $this->createForm(LessonFormType::class, $lesson);
         $form->handleRequest($request);
@@ -92,7 +94,7 @@ class LessonController extends AbstractController
     }
 
     /**
-     * @Route("/lesson/remove/{id}", name="app_admin_lesson_remove")
+     * @Route("/lesson/remove/{id}", name="app_instructor_lesson_remove")
      */
     public function removeLesson(Lesson $lesson, EntityManagerInterface $em)
     {
@@ -100,5 +102,18 @@ class LessonController extends AbstractController
         $em->flush();
         $this->addFlash('success', 'Removed successfully');
         return $this->redirectToRoute('app_instructor_lessons');
+    }
+
+    /**
+     * @Route("/lessons/participants/{id}", name="app_instructor_participants")
+     */
+    public function participants(Lesson $lesson, MemberRepository $repository)
+    {
+        $participants = $repository->getMembersFrom($lesson);
+        dd($participants);
+        return $this->render('views/instructor/participant/index.html.twig', [
+            'title' => 'Participants',
+            'lesson' => $lesson,
+        ]);
     }
 }

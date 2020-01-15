@@ -2,8 +2,8 @@
 {% block crud_title %}Planned lessons{% endblock %}
 {% block crud_add_text %}Plan new lesson{% endblock %}
 {% block crud_href_add %}{{ path('app_instructor_lesson_add') }}{% endblock %}
-{% block crud_href_edit %}{{ path('app_admin_lesson_edit', {'id': entry.id}) }}{% endblock %}
-{% block crud_href_delete %}{{ path('app_admin_lesson_remove', {'id': entry.id}) }}{% endblock %}
+{% block crud_href_edit %}{{ path('app_instructor_lesson_edit', {'id': entry.id}) }}{% endblock %}
+{% block crud_href_delete %}{{ path('app_instructor_lesson_remove', {'id': entry.id}) }}{% endblock %}
 {% block crud_table_ths %}
     <th>Training course</th>
     <th>Duration</th>
@@ -16,4 +16,12 @@
     <td>{{ entry.training.duration }} {{ entry.training.duration == 1 ? 'minute' : 'minutes' }}</td>
     <td>{{ entry.location }}</td>
     <td>{{ entry.time|date("n-d-Y H:i") }}-{{ entry.time|date_modify("+" ~ entry.training.duration ~ 'minutes')|date("H:i") }}</td>
+{% endblock %}
+
+{% block crud_table_actions %}
+    {{ parent() }}
+    <a class="dropdown-item"
+       href="{{ path('app_instructor_participants', {'id': entry.id}) }}">
+        <i class="fas fa-users"></i> Participants
+    </a>
 {% endblock %}

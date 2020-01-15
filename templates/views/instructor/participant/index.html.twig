@@ -1,0 +1,7 @@
+{% extends 'content_base.html.twig' %}
+
+{% block content_body %}
+{% for registration in lesson.registrations %}
+    <p>{{ registration.member.email }}</p>
+{% endfor %}
+{% endblock %}

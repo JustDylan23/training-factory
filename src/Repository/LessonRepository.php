@@ -51,19 +51,6 @@ class LessonRepository extends ServiceEntityRepository
         return $qb->orderBy('l.time', 'ASC');
     }
 
-    /*
-     * SELECT t.name, t.duration, l.location, l.time, COUNT(r_count.lesson_id) AS relations, l.max_people as max_relations
-     * FROM lesson as l
-     * INNER JOIN training AS t
-     * ON t.id = l.training_id
-     * LEFT JOIN registration AS r
-     * ON r.lesson_id = l.id AND r.member_id = 42
-     * LEFT JOIN registration as r_count
-     * ON l.id = r_count.lesson_id
-     * WHERE r.lesson_id is null
-     * GROUP BY l.id
-     * ORDER BY l.time ASC
-     */
     public function getWithSearchQueryBuilderAndNotSignedUp(?string $term, ?DateTimeInterface $since, User $member)
     {
         $qb = $this->createQueryBuilder('l')
@@ -83,7 +70,7 @@ class LessonRepository extends ServiceEntityRepository
         if ($since) {
             $qb->andWhere($qb->expr()->gt('l.time', ':since'))
                 ->setParameter('since', $since);
-        } else{
+        } else {
             $qb->andWhere($qb->expr()->gt('l.time', 'CURRENT_DATE()'));
         }
         return $qb->orderBy('l.time', 'ASC');

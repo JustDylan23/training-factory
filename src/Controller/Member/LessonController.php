@@ -72,7 +72,7 @@ class LessonController extends AbstractController
             10
         );
 
-        return $this->render('views/member/lessons.html.twig', [
+        return $this->render('views/member/lesson.html.twig', [
             'title' => 'My lessons',
             'pagination' => $pagination,
         ]);

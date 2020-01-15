@@ -2,9 +2,11 @@
 
 namespace App\Repository;
 
+use App\Entity\Lesson;
 use App\Entity\Member;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\ORM\Query\Expr\Join;
 
 /**
  * @method Member|null find($id, $lockMode = null, $lockVersion = null)
@@ -27,5 +29,14 @@ class MemberRepository extends ServiceEntityRepository
                 ->setParameter('term', '%' . $term . '%');
         }
         return $qb->orderBy('m.surname', 'ASC');
+    }
+
+    public function getMembersFrom(Lesson $lesson)
+    {
+        return $qb = $this->createQueryBuilder('m')
+            ->innerJoin('m.registrations', 'r', Join::WITH, 'r.lesson = :lesson')
+            ->setParameter('lesson', $lesson->getId())
+            ->getQuery()
+            ->getResult();
     }
 }
