@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Lesson;
 use App\Entity\User;
+use DateTimeInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\Query\Expr\Join;
@@ -63,7 +64,7 @@ class LessonRepository extends ServiceEntityRepository
      * GROUP BY l.id
      * ORDER BY l.time ASC
      */
-    public function getWithSearchQueryBuilderAndNotSignedUp(?string $term, User $member)
+    public function getWithSearchQueryBuilderAndNotSignedUp(?string $term, ?DateTimeInterface $since, User $member)
     {
         $qb = $this->createQueryBuilder('l')
             ->select('l.id, l.location, l.time, l.maxPeople as max_relations')
@@ -77,8 +78,13 @@ class LessonRepository extends ServiceEntityRepository
             ->groupBy('l.id');
         if ($term) {
             $qb->andWhere($qb->expr()->like('t.name', ':term'))
-                ->andWhere($qb->expr()->gt('CURRENT_DATE()', 'l.time'))
                 ->setParameter('term', '%' . $term . '%');
+        }
+        if ($since) {
+            $qb->andWhere($qb->expr()->gt('l.time', ':since'))
+                ->setParameter('since', $since);
+        } else{
+            $qb->andWhere($qb->expr()->gt('l.time', 'CURRENT_DATE()'));
         }
         return $qb->orderBy('l.time', 'ASC');
     }

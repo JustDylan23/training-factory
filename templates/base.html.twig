@@ -7,26 +7,46 @@
         <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}">
     {% endblock %}
     {% block stylesheets %}
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-        <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+              integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+              crossorigin="anonymous">
+        <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+                integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+                crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+                integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+                crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+                integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+                crossorigin="anonymous"></script>
         <script src="https://kit.fontawesome.com/5412796e81.js"></script>
     {% endblock %}
 </head>
 <body class="d-flex flex-column min-vh-100">
-    {% if is_granted('ROLE_PREVIOUS_ADMIN') %}
-        <div class="alert alert-warning d-flex" style="margin-bottom: 0;">
-            <section class="mr-auto">You are currently switched as <strong>{{ app.user.email }}</strong></section>
-            <a href="{{ path('app_index', {'_switch_user': '_exit'}) }}">Exit Impersonation</a>
+<div id="notifications" style="position: fixed; right: 20px; top: 20px; z-index: 1000">
+    {% for message in app.flashes('success') %}
+        <div class="notification alert alert-success alert-dismissible fade show" role="alert">
+            <strong>Success!</strong> {{ message }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
         </div>
-    {% endif %}
-{% for message in app.flashes('success') %}
-    <div class="alert alert-success">
-        <strong>Success!</strong> {{ message }}
+    {% endfor %}
+</div>
+{% if is_granted('ROLE_PREVIOUS_ADMIN') %}
+    <div class="alert alert-warning d-flex" style="margin-bottom: 0;">
+        <section class="mr-auto">You are currently switched as <strong>{{ app.user.email }}</strong></section>
+        <a href="{{ path('app_index', {'_switch_user': '_exit'}) }}">Exit Impersonation</a>
     </div>
-{% endfor %}
+{% endif %}
 {% block body %}{% endblock %}
+<script>
+    $(document).ready(function() {
+        setTimeout(function() {
+            $(".alert").alert('close');
+        }, 10000);
+    });
+</script>
 {% block javascripts %}{% endblock %}
 </body>
 </html>

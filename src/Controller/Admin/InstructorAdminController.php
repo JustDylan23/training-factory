@@ -11,7 +11,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 /**
  * @IsGranted("ROLE_ADMIN")
@@ -63,7 +62,7 @@ class InstructorAdminController extends AbstractController
     /**
      * @Route("/instructor/edit/{id}", name="app_admin_instructor_edit")
      */
-    public function editInstructor(Instructor $instructor, Request $request, EntityManagerInterface $em, UserPasswordEncoderInterface $passwordEncoder)
+    public function editInstructor(Instructor $instructor, Request $request, EntityManagerInterface $em)
     {
         $form = $this->createForm(InstructorFormType::class, $instructor, ['user' => $this->getUser()]);
         $form->handleRequest($request);

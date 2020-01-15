@@ -9,7 +9,7 @@ use Twig\Extension\RuntimeExtensionInterface;
 
 class AppRuntime implements RuntimeExtensionInterface
 {
-    private $uploaderHelper;
+    private UploaderHelper $uploaderHelper;
 
     public function __construct(UploaderHelper $uploaderHelper)
     {
