@@ -4,19 +4,15 @@
 namespace App\Controller\Instructor;
 
 use App\Entity\Lesson;
-use App\Entity\Member;
 use App\Form\LessonFormType;
-use App\Form\MemberFormType;
 use App\Repository\LessonRepository;
 use App\Repository\MemberRepository;
-use App\Repository\RegistrationRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 /**
  * @IsGranted("ROLE_INSTRUCTOR")
@@ -60,7 +56,7 @@ class LessonController extends AbstractController
             $em->persist($lesson);
             $em->flush();
 
-            $this->addFlash('success', 'Lesson planned!');
+            $this->addFlash('success', "Lesson of type $lesson planned at {$lesson->getTime()->format('Y-m-d H:i')}!");
 
             return $this->redirectToRoute('app_instructor_lessons');
         }
@@ -83,7 +79,7 @@ class LessonController extends AbstractController
             $em->persist($lesson);
             $em->flush();
 
-            $this->addFlash('success', 'Applied changes!');
+            $this->addFlash('success', "Applied changes to lesson of type $lesson!");
             return $this->redirectToRoute('app_instructor_lessons');
         }
 
@@ -100,12 +96,12 @@ class LessonController extends AbstractController
     {
         $em->remove($lesson);
         $em->flush();
-        $this->addFlash('success', 'Removed successfully');
+        $this->addFlash('success', "Removed lesson of type $lesson");
         return $this->redirectToRoute('app_instructor_lessons');
     }
 
     /**
-     * @Route("/lessons/participants/{id}", name="app_instructor_participants")
+     * @Route("/lesson/participants/{id}", name="app_instructor_participants")
      */
     public function participants(Lesson $lesson, MemberRepository $repository)
     {

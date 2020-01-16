@@ -55,7 +55,7 @@ class LessonController extends AbstractController
 
         $em->persist($registration);
         $em->flush();
-        $this->addFlash('success', 'Signed up for ' . $lesson);
+        $this->addFlash('success', "Signed up for lesson of type $lesson");
         return $this->redirectToRoute('app_member_lessons');
     }
 
@@ -86,7 +86,7 @@ class LessonController extends AbstractController
         $registration = $repository->findOneBy(['lesson' => $lesson->getId()]);
         $em->remove($registration);
         $em->flush();
-        $this->addFlash('success', 'Signed out of lesson');
+        $this->addFlash('success', "Signed out of lesson of type $lesson!");
         return $this->redirectToRoute('app_member_lessons');
     }
 }

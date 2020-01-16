@@ -61,7 +61,7 @@ class TrainingAdminController extends AbstractController
             $em->persist($training);
             $em->flush();
 
-            $this->addFlash('success', 'Training course added!');
+            $this->addFlash('success', "Added training course $training!");
 
             return $this->redirectToRoute('app_admin_trainings');
         }
@@ -92,7 +92,7 @@ class TrainingAdminController extends AbstractController
             $em->persist($training);
             $em->flush();
 
-            $this->addFlash('success', 'Applied changes!');
+            $this->addFlash('success', "Applied changes to training course {$training->getName()}!");
 
             return $this->redirectToRoute('app_admin_trainings');
         }
@@ -110,7 +110,7 @@ class TrainingAdminController extends AbstractController
     {
         $em->remove($training);
         $em->flush();
-        $this->addFlash('success', 'Removed successfully');
+        $this->addFlash('success', "Removed training course $training");
         return $this->redirectToRoute('app_admin_trainings');
     }
 }

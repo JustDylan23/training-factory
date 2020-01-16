@@ -27,7 +27,7 @@
         {% if full %}
             <i class="far fa-times-circle"></i> full&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         {% else %}
-            <i class="fas fa-sign-out-alt"></i> Sign up
+            <i class="fas fa-calendar-plus"></i> Sign up
         {% endif %}
     </a>
 {% endblock %}
@@ -46,7 +46,8 @@
                        name="startDate"
                        required
                        type="datetime-local"
-                       value="{{ app.request.query.get('startDate')|default('now'|date("Y-m-d\\TH:i")) }}">
+                       value="{{ app.request.query.get('startDate')|default('now'|date("c")) }}"
+                >
             </div>
         </li>
         <li class="list-group-item">

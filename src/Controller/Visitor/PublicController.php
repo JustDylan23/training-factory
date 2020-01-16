@@ -15,7 +15,6 @@ class PublicController extends AbstractController
     public function index(TrainingRepository $trainingRepository)
     {
         $results = $trainingRepository->getFeaturedTrainings();
-
         return $this->render('views/public/index.html.twig', [
             'title' => 'Training Center The Hague',
             'trainings' => $results

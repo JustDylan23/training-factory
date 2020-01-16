@@ -14,7 +14,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 /**
  * @IsGranted("ROLE_ADMIN")
@@ -55,7 +54,7 @@ class MemberAdminController extends AbstractController
             $em->persist($member);
             $em->flush();
 
-            $this->addFlash('success', 'Member added!');
+            $this->addFlash('success', "Added member $member!");
 
             return $this->redirectToRoute('app_admin_members');
         }
@@ -78,7 +77,7 @@ class MemberAdminController extends AbstractController
             $em->persist($member);
             $em->flush();
 
-            $this->addFlash('success', 'Applied changes!');
+            $this->addFlash('success', "Applied changes to member $member!");
             return $this->redirectToRoute('app_admin_members');
         }
 
@@ -95,7 +94,7 @@ class MemberAdminController extends AbstractController
     {
         $em->remove($member);
         $em->flush();
-        $this->addFlash('success', 'Removed successfully');
+        $this->addFlash('success', "Removed member $member!");
         return $this->redirectToRoute('app_admin_members');
     }
 
@@ -107,9 +106,11 @@ class MemberAdminController extends AbstractController
         $isDisabled = !$user->isDisabled();
         $user->setDisabled($isDisabled);
         $em->flush();
-        $this->addFlash('success',
-            $isDisabled ? 'Disabled user successfully' : 'Enabled user successfully'
-            );
+        if ($isDisabled) {
+            $this->addFlash('warning', "Disabled user $user");
+        } else {
+            $this->addFlash('success', "Enabled user $user");
+        }
         return $this->redirectToRoute('app_admin_members');
     }
 }

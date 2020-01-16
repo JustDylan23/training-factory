@@ -35,7 +35,7 @@ class MemberRepository extends ServiceEntityRepository
     {
         return $qb = $this->createQueryBuilder('m')
             ->innerJoin('m.registrations', 'r', Join::WITH, 'r.lesson = :lesson')
-            ->setParameter('lesson', $lesson->getId())
+            ->setParameter('lesson', $lesson)
             ->getQuery()
             ->getResult();
     }

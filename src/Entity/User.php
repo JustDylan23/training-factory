@@ -237,4 +237,9 @@ abstract class User implements UserInterface
     {
         return UserFormType::class;
     }
+
+    public function __toString()
+    {
+        return $this->getEmail();
+    }
 }

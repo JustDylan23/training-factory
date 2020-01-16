@@ -61,6 +61,7 @@ class SecurityController extends AbstractController
             $em->flush();
 
             $this->addFlash('success', 'Account created!');
+            $this->addFlash('message', "Welcome|Hi there {$this->getUser()}.\nWelcome to Training Centre The Hague");
 
             return $authenticatorHandler->authenticateUserAndHandleSuccess($user, $request, $authenticator, 'main');
         }
@@ -91,7 +92,7 @@ class SecurityController extends AbstractController
 
         if ($userForm->isSubmitted() && $userForm->isValid()) {
             $em->flush();
-            $this->addFlash('success', 'Changed applied!');
+            $this->addFlash('success', "Changed applied to account of $user!");
             return $authenticatorHandler->authenticateUserAndHandleSuccess($user, $request, $authenticator, 'main');
         }
 
@@ -106,7 +107,7 @@ class SecurityController extends AbstractController
             } else {
                 $user->setPassword($passwordEncoder->encodePassword($user, $changePassword->getNewPassword()));
                 $em->flush();
-                $this->addFlash('success', 'Changed applied!');
+                $this->addFlash('success', 'Changed password!');
                 return $authenticatorHandler->authenticateUserAndHandleSuccess($user, $request, $authenticator, 'main');
             }
         }

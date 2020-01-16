@@ -12,9 +12,11 @@
                     <h5 class="card-title">{{ training.name }}</h5>
                     <p class="card-text">{{ training.description }}</p>
                 </div>
+                {% if is_granted('ROLE_USER') %}
                 <div class="card-footer">
                     <a href="{{ path('app_member_signup', {'search': training.name}) }}">Search for lessons..</a>
                 </div>
+                {% endif %}
             </div>
         {% endfor %}
     </div>

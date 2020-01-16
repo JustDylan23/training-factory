@@ -41,7 +41,7 @@ class LessonRepository extends ServiceEntityRepository
             ->innerJoin('l.training', 't')
             ->innerJoin('l.registrations', 'r')
             ->andWhere('r.member = :member')
-            ->setParameter('member', $member->getId())
+            ->setParameter('member', $member)
             ->addSelect('t');
         if ($term) {
             $qb->andWhere($qb->expr()->like('t.name', ':term'))
@@ -59,7 +59,7 @@ class LessonRepository extends ServiceEntityRepository
             ->addSelect('t.name, t.duration')
             ->leftJoin('l.registrations', 'r', Join::WITH, 'r.member = :member')
             ->where('r.lesson is null')
-            ->setParameter('member', $member->getId())
+            ->setParameter('member', $member)
             ->leftJoin('l.registrations', 'r_count')
             ->addSelect('COUNT(r_count.lesson) AS relations')
             ->groupBy('l.id');

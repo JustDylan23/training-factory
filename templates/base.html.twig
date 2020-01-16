@@ -23,14 +23,44 @@
     {% endblock %}
 </head>
 <body class="d-flex flex-column min-vh-100">
-<div id="notifications" style="position: fixed; right: 20px; top: 20px; z-index: 1000">
-    {% for message in app.flashes('success') %}
-        <div class="notification alert alert-success alert-dismissible fade show" role="alert">
-            <strong>Success!</strong> {{ message }}
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+{#    {% for message in app.flashes('message') %}#}
+<div id="messages" style="position: absolute; right: 20px; top: 100px; z-index: 10000">
+    {#        <div class="toast">#}
+{#            <div class="toast-header">#}
+{#                Toast Header#}
+{#            </div>#}
+{#            <div class="toast-body">#}
+{#                {{ message }}#}
+{#            </div>#}
+{#        </div>#}
+{#    {% endfor %}#}
+    {% for message in app.flashes('message') %}
+        {% set content = message|split('|') %}
+    <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-autohide="false">
+        <div class="toast-header">
+            <strong class="mr-auto">{{ content[0] }}</strong>
+            <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>
         </div>
+        <div class="toast-body">
+            {{ content[1]|nl2br}}
+        </div>
+    </div>
+    {% endfor %}
+
+</div>
+<div id="notifications" style="position: absolute; left: 20px; top: 100px; z-index: 10000">
+    {% for label, messages in app.flashes(['warning', 'error', 'success']) %}
+        {% for message in messages %}
+            <div class="autoclose alert alert-{{ label == 'error' ? 'danger' : label }} alert-dismissible fade show"
+                 role="alert">
+                <strong>{{ label|capitalize }}!</strong> {{ message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        {% endfor %}
     {% endfor %}
 </div>
 {% if is_granted('ROLE_PREVIOUS_ADMIN') %}
@@ -41,10 +71,11 @@
 {% endif %}
 {% block body %}{% endblock %}
 <script>
-    $(document).ready(function() {
-        setTimeout(function() {
-            $(".notification").alert('close');
+    $(document).ready(function () {
+        setTimeout(function () {
+            $(".autoclose").alert('close');
         }, 8000);
+        $('.toast').toast('show');
     });
 </script>
 {% block javascripts %}{% endblock %}

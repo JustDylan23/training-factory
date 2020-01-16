@@ -1,12 +1,14 @@
 {% extends 'content_base.html.twig' %}
 
 {% block content_body %}
-    <h1 class="text-danger">Welcome to Training Center The Hague</h1>
-    <p>
-        The Hague Training Center is a gym where you can practice different types of martial arts, indoor bootcamp,
-        personal and small group training under proffesional supervisers. On this site you can sign in and out of
-        lessons.
-    </p>
+    <div class="jumbotron mt-4">
+        <h1 class="text-info">Welcome to Training Center The Hague</h1>
+        <p>
+            The Hague Training Center is a gym where you can practice different types of martial arts, indoor bootcamp,
+            personal and small group training under proffesional supervisers. On this site you can sign in and out of
+            lessons.
+        </p>
+    </div>
     <div class="row">
         {% for training in trainings %}
             <div class="col-lg-4">

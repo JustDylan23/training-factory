@@ -44,12 +44,13 @@ class InstructorAdminController extends AbstractController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            /** @var Instructor $instructor */
             $instructor = $form->getData();
 
             $em->persist($instructor);
             $em->flush();
 
-            $this->addFlash('success', 'Instructor added!');
+            $this->addFlash('success', "Added instructor $instructor!");
             return $this->redirectToRoute('app_admin_instructors');
         }
 
@@ -71,7 +72,7 @@ class InstructorAdminController extends AbstractController
             $em->persist($instructor);
             $em->flush();
 
-            $this->addFlash('success', 'Applied changes!');
+            $this->addFlash('success', "Applied changes to instructor $instructor!");
             return $this->redirectToRoute('app_admin_instructors');
         }
 
@@ -88,7 +89,7 @@ class InstructorAdminController extends AbstractController
     {
         $em->remove($instructor);
         $em->flush();
-        $this->addFlash('success', 'Removed successfully');
+        $this->addFlash('success', "Removed instructor $instructor!");
         return $this->redirectToRoute('app_admin_instructors');
     }
 }
