@@ -106,9 +106,9 @@ class LessonController extends AbstractController
     public function participants(Lesson $lesson, MemberRepository $repository)
     {
         $participants = $repository->getMembersFrom($lesson);
-        dd($participants);
         return $this->render('views/instructor/participant/index.html.twig', [
             'title' => 'Participants',
+            'members' => $participants,
             'lesson' => $lesson,
         ]);
     }

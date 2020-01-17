@@ -1,7 +1,14 @@
 {% extends 'content_base.html.twig' %}
 
 {% block content_body %}
-{% for registration in lesson.registrations %}
-    <p>{{ registration.member.email }}</p>
-{% endfor %}
+    <ul class="list-group">
+        <li class="list-group-item active">{{ lesson }} - {{ lesson.time|date() }}</li>
+        {% for member in members %}
+            <li class="list-group-item">
+                <p>{{ member }}</p>
+            </li>
+        {% else %}
+            <p>No participants found</p>
+        {% endfor %}
+    </ul>
 {% endblock %}
