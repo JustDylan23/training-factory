@@ -29,7 +29,6 @@ class LessonRepository extends ServiceEntityRepository
             ->addSelect('t');
         if ($term) {
             $qb->andWhere($qb->expr()->like('t.name', ':term'))
-                ->andWhere($qb->expr()->gt('CURRENT_DATE()', 'l.time'))
                 ->setParameter('term', '%' . $term . '%');
         }
         return $qb->orderBy('l.time', 'ASC');
