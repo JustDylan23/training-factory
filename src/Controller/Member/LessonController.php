@@ -26,7 +26,6 @@ class LessonController extends AbstractController
     public function index(Request $request, LessonRepository $repository, PaginatorInterface $paginator)
     {
         $search = $request->query->get('search');
-        $showFull = $request->query->has('showFull');
         $startDate = $request->query->get('startDate');
         if ($startDate) {
             $startDate = DateTime::createFromFormat('Y-m-d\\TH:i', $startDate);

@@ -46,7 +46,7 @@
                        name="startDate"
                        required
                        type="datetime-local"
-                       value="{{ app.request.query.get('startDate')|default('now'|date("c")) }}"
+                       value="{{ app.request.query.get('startDate')|default('now'|date("Y-m-d\\TH:i")) }}"
                 >
             </div>
         </li>

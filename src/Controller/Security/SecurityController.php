@@ -61,7 +61,7 @@ class SecurityController extends AbstractController
             $em->flush();
 
             $this->addFlash('success', 'Account created!');
-            $this->addFlash('message', "Welcome|Hi there {$this->getUser()}.\nWelcome to Training Centre The Hague");
+            $this->addFlash('message', "Welcome|Hi there {$this->getUser()->getUsername()}.\nWelcome to Training Centre The Hague");
 
             return $authenticatorHandler->authenticateUserAndHandleSuccess($user, $request, $authenticator, 'main');
         }
