@@ -14,7 +14,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @ORM\InheritanceType("SINGLE_TABLE")
  *
- * @UniqueEntity("email")
+ * @UniqueEntity(fields={"email"}, message="Email {{ value }} is already taken", entityClass="App\Entity\User")
  */
 abstract class User implements UserInterface
 {
@@ -29,6 +29,7 @@ abstract class User implements UserInterface
      * @ORM\Column(type="string", length=180, unique=true)
      *
      * @Assert\NotBlank()
+     * @Assert\Email()
      */
     private $email;
 

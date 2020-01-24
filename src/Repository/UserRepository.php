@@ -5,6 +5,8 @@ namespace App\Repository;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Symfony\Component\Form\FormError;
+use Symfony\Component\Form\FormInterface;
 
 /**
  * @method User|null find($id, $lockMode = null, $lockVersion = null)

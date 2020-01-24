@@ -27,9 +27,7 @@ class UserFormType extends AbstractType
         $user = $options['data'];
         $isEdit = $user && $user->getId();
 
-        /** @var User|null $editor */
-        $editor = $options['user'];
-        $isAdmin = $editor instanceof Admin;
+        $isAdmin = $options['isAdmin'];
 
         $builder->add('email', EmailType::class, [
             'disabled' => $isEdit && !$isAdmin
@@ -82,7 +80,7 @@ class UserFormType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => User::class,
-            'user' => null,
+            'isAdmin' => false,
             'data' => null,
         ]);
     }

@@ -65,11 +65,10 @@ class InstructorAdminController extends AbstractController
      */
     public function editInstructor(Instructor $instructor, Request $request, EntityManagerInterface $em)
     {
-        $form = $this->createForm(InstructorFormType::class, $instructor, ['user' => $this->getUser()]);
+        $form = $this->createForm(InstructorFormType::class, $instructor, ['isAdmin' => true]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $em->persist($instructor);
             $em->flush();
 
             $this->addFlash('success', "Applied changes to instructor $instructor!");
