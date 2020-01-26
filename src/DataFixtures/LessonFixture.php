@@ -25,7 +25,7 @@ class LessonFixture extends BaseFixtures implements DependentFixtureInterface
                 $lesson->setInstructor($instructor);
             }
             $lesson->setMaxPeople(rand(3, 30));
-            $lesson->setTime($this->faker->dateTimeBetween('now', '+30 days'));
+            $lesson->setTime($this->faker->dateTimeBetween('+ 2 months', '+5 months'));
             $lesson->setLocation($this->faker->randomElement(['The Hague', 'Amsterdam', 'Rotterdam', 'Groningen']));
         });
 

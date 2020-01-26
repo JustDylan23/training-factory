@@ -40,6 +40,9 @@ abstract class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=255)
+     *
+     * @Assert\NotBlank()
+     * @Assert\Length(min="6", max="25")
      */
     private $password;
 

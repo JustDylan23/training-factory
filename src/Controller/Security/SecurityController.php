@@ -1,18 +1,16 @@
 <?php
 
-
 namespace App\Controller\Security;
 
 use App\Entity\Member;
 use App\Entity\User;
 use App\Form\ChangePasswordFormType;
 use App\Form\MemberFormType;
-use App\Form\model\ChangePassword;
+use App\Form\Model\ChangePassword;
 use App\Security\LoginFormAuthenticator;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
@@ -97,19 +95,15 @@ class SecurityController extends AbstractController
         }
 
         $changePasswordForm = $this->createForm(ChangePasswordFormType::class);
-
         $changePasswordForm->handleRequest($request);
+
         if ($changePasswordForm->isSubmitted() && $changePasswordForm->isValid()) {
             /** @var ChangePassword $changePassword */
             $changePassword = $changePasswordForm->getData();
-            if (!$passwordEncoder->isPasswordValid($user, $changePassword->getOldPassword())) {
-                $changePasswordForm->get('oldPassword')->addError(new FormError('Incorrect password'));
-            } else {
-                $user->setPassword($passwordEncoder->encodePassword($user, $changePassword->getNewPassword()));
-                $em->flush();
-                $this->addFlash('success', 'Changed password!');
-                return $authenticatorHandler->authenticateUserAndHandleSuccess($user, $request, $authenticator, 'main');
-            }
+            $user->setPassword($passwordEncoder->encodePassword($user, $changePassword->getNewPassword()));
+            $em->flush();
+            $this->addFlash('success', 'Changed password!');
+            return $authenticatorHandler->authenticateUserAndHandleSuccess($user, $request, $authenticator, 'main');
         }
 
         return $this->render('views/security/account.html.twig', [
