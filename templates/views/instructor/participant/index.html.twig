@@ -2,7 +2,12 @@
 
 {% block content_body %}
     <ul class="list-group">
-        <li class="list-group-item active">{{ lesson }} - {{ lesson.time|date() }}</li>
+        <li class="list-group-item active d-flex">
+            <h3 class="mr-auto">{{ lesson }} - {{ lesson.time|date() }}</h3>
+            <a class="btn btn-outline-light" href="{{ path('app_instructor_participants_add_overview', {id: lesson.id}) }}">
+                Add member +
+            </a>
+        </li>
         {% for member in members %}
             <li class="list-group-item">
                 <p>{{ member }}</p>

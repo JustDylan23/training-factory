@@ -11,7 +11,7 @@
     </li>
 {% endmacro %}
 
-<header class="navbar navbar-expand-md navbar-dark bg-dark shadow">
+<header class="navbar navbar-expand-md navbar-dark bg-dark shadow mb-3">
     <a class="navbar-brand d-flex" href="{{ path('app_index') }}">
         <img src="{{ asset('img/font.png') }}" alt="banner" height="50px" class="mr-2"
              style="filter: brightness(0) invert(1);">
@@ -47,7 +47,7 @@
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                         <a class="dropdown-item" href="{{ path('app_security_account') }}">
-                            <i class="fas fa-user-edit"></i> Profile
+                            <i class="fas fa-user-edit"></i> Account
                         </a>
                         <a class="dropdown-item" href="{{ path('app_security_logout') }}">
                             <i class="fas fa-sign-out-alt"></i> Logout

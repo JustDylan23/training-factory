@@ -1,4 +1,5 @@
 {% extends 'base_crud.html.twig' %}
+
 {% block crud_title %}My Lessons{% endblock %}
 {% block crud_add_text %}Sign up for lesson{% endblock %}
 {% block crud_href_add %}{{ path('app_member_signup') }}{% endblock %}
@@ -18,7 +19,7 @@
 {% endblock %}
 
 {% block crud_table_dropdown %}
-    <a class="btn btn-success"
+    <a class="btn btn-danger single-click"
        href="{{ path('app_member_lesson_signout', {'id': entry.id}) }}">
         <i class="fas fa-calendar-times"></i> Sign out
     </a>

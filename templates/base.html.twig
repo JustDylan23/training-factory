@@ -76,6 +76,9 @@
             $(".autoclose").alert('close');
         }, 8000);
         $('.toast').toast('show');
+        $('.single-click').on('click', function () {
+            $(this).addClass('disabled');
+        });
     });
 </script>
 {% block javascripts %}{% endblock %}

@@ -22,19 +22,19 @@ class LessonRepository extends ServiceEntityRepository
         parent::__construct($registry, Lesson::class);
     }
 
-    public function getWithSearchQueryBuilder(?string $term)
+    public function getWithSearchQueryBuilder(?string $search)
     {
         $qb = $this->createQueryBuilder('l')
             ->innerJoin('l.training', 't')
             ->addSelect('t');
-        if ($term) {
+        if ($search) {
             $qb->andWhere($qb->expr()->like('t.name', ':term'))
-                ->setParameter('term', '%' . $term . '%');
+                ->setParameter('term', '%' . $search . '%');
         }
         return $qb->orderBy('l.time', 'ASC');
     }
 
-    public function getWithSearchQueryBuilderAndSignedUp(?string $term, User $member)
+    public function getWithSearchQueryBuilderAndSignedUp(?string $search, User $member)
     {
         $qb = $this->createQueryBuilder('l')
             ->innerJoin('l.training', 't')
@@ -42,15 +42,15 @@ class LessonRepository extends ServiceEntityRepository
             ->andWhere('r.member = :member')
             ->setParameter('member', $member)
             ->addSelect('t');
-        if ($term) {
+        if ($search) {
             $qb->andWhere($qb->expr()->like('t.name', ':term'))
                 ->andWhere($qb->expr()->gt('CURRENT_DATE()', 'l.time'))
-                ->setParameter('term', '%' . $term . '%');
+                ->setParameter('term', '%' . $search . '%');
         }
         return $qb->orderBy('l.time', 'ASC');
     }
 
-    public function getWithSearchQueryBuilderAndNotSignedUp(?string $term, ?DateTimeInterface $since, User $member)
+    public function getWithSearchQueryBuilderAndNotSignedUp(?string $search, ?DateTimeInterface $since, User $member)
     {
         $qb = $this->createQueryBuilder('l')
             ->select('l.id, l.location, l.time, l.maxPeople as max_relations')
@@ -62,9 +62,9 @@ class LessonRepository extends ServiceEntityRepository
             ->leftJoin('l.registrations', 'r_count')
             ->addSelect('COUNT(r_count.lesson) AS relations')
             ->groupBy('l.id');
-        if ($term) {
+        if ($search) {
             $qb->andWhere($qb->expr()->like('t.name', ':term'))
-                ->setParameter('term', '%' . $term . '%');
+                ->setParameter('term', '%' . $search . '%');
         }
         if ($since) {
             $qb->andWhere($qb->expr()->gt('l.time', ':since'))

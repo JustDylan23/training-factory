@@ -35,8 +35,20 @@ class MemberRepository extends ServiceEntityRepository
     {
         return $qb = $this->createQueryBuilder('m')
             ->innerJoin('m.registrations', 'r', Join::WITH, 'r.lesson = :lesson')
-            ->setParameter('lesson', $lesson->getId())
+            ->setParameter('lesson', $lesson)
             ->getQuery()
             ->getResult();
+    }
+
+    public function getQueryBuilderMembersNotInLessonWithSearch(Lesson $lesson, ?string $search)
+    {
+        $qb = $this->createQueryBuilder('m')
+            ->leftJoin('m.registrations', 'r', Join::WITH, 'r.lesson = :lesson')
+            ->setParameter('lesson', $lesson)
+            ->andWhere('r.member is null');
+        if ($search) {
+            $qb->andWhere('m.firstname LIKE :term OR m.surname LIKE :term OR m.surnamePrepositions LIKE :term')
+                ->setParameter('term', '%' . $search . '%');
+        }
     }
 }

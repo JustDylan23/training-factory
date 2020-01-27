@@ -1,34 +1,34 @@
 {% extends 'content_base.html.twig' %}
 
 {% block content_body %}
-    <div class="table-responsive table-hover">
-        <div class="w-100 bg-light p-2 mt-2 rounded border">
-            <div class="d-flex mb-2">
-                <h3 class="mr-auto ml-1">{% block crud_title %}{% endblock %}</h3>
-                {% block crud_add_button %}
-                    <a href="{% block crud_href_add %}{% endblock %}" class="btn btn-outline-primary">
-                        <i class="fas fa-plus-circle"></i> {% block crud_add_text %}Add{% endblock %}</a>
-                {% endblock %}
-            </div>
-            <form class="pb-3">
-                <div class="input-group">
-                    <input
-                            name="search"
-                            class="form-control"
-                            value="{{ app.request.query.get('search') }}"
-                            placeholder="Search..."
-                    >
-                    <div class="input-group-append">
-                        <button type="submit"
-                                class="btn btn-outline-primary">
-                            <span class="fa fa-search"></span>
-                        </button>
-                    </div>
-                </div>
-                {% block crud_search_form_append %}{% endblock %}
-            </form>
+    <div class="w-100 bg-light p-2 rounded border">
+        <div class="d-flex mb-2">
+            <h3 class="mr-auto ml-1">{% block crud_title %}{% endblock %}</h3>
+            {% block crud_add_button %}
+                <a href="{% block crud_href_add %}{% endblock %}" class="btn btn-outline-primary">
+                    <i class="fas fa-plus-circle"></i> {% block crud_add_text %}Add{% endblock %}</a>
+            {% endblock %}
         </div>
-        <table class="table {% block crud_table_styling %}{% endblock %}">
+        <form class="pb-3">
+            <div class="input-group">
+                <input
+                        name="search"
+                        class="form-control"
+                        value="{{ app.request.query.get('search') }}"
+                        placeholder="Search..."
+                >
+                <div class="input-group-append">
+                    <button type="submit"
+                            class="btn btn-outline-primary">
+                        <span class="fa fa-search"></span>
+                    </button>
+                </div>
+            </div>
+            {% block crud_search_form_append %}{% endblock %}
+        </form>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-hover {% block crud_table_styling %}{% endblock %}">
             <thead>
             <tr>
                 {% block crud_table_ths %}{% endblock %}
@@ -42,28 +42,28 @@
                     {% block crud_table_entries %}{% endblock %}
                     <td>
                         {% block crud_table_dropdown %}
-                        <div class="dropdown">
-                            <a class="dropdown-toggle text-primary" data-toggle="dropdown">
-                                Options
-                            </a>
-                            <div class="dropdown-menu">
-                                {% block crud_table_actions %}
-                                    <a class="dropdown-item"
-                                       href="{% block crud_href_edit %}{% endblock %}">
-                                        <i class="far fa-edit"></i>
-                                        Edit
-                                    </a>
-                                    <button
-                                            class="dropdown-item dropdown button-remove-entry"
-                                            data-toggle="modal"
-                                            data-target="#confirm-delete"
-                                            data-href="{% block crud_href_delete %}{% endblock %}"
-                                    >
-                                        <i class="far fa-trash-alt "></i> Delete
-                                    </button>
-                                {% endblock %}
+                            <div class="dropdown">
+                                <a class="dropdown-toggle text-primary" data-toggle="dropdown">
+                                    Options
+                                </a>
+                                <div class="dropdown-menu">
+                                    {% block crud_table_actions %}
+                                        <a class="dropdown-item"
+                                           href="{% block crud_href_edit %}{% endblock %}">
+                                            <i class="far fa-edit"></i>
+                                            Edit
+                                        </a>
+                                        <button
+                                                class="dropdown-item dropdown button-remove-entry"
+                                                data-toggle="modal"
+                                                data-target="#confirm-delete"
+                                                data-href="{% block crud_href_delete %}{% endblock %}"
+                                        >
+                                            <i class="far fa-trash-alt "></i> Delete
+                                        </button>
+                                    {% endblock %}
+                                </div>
                             </div>
-                        </div>
                         {% endblock %}
                     </td>
                 </tr>

@@ -25,10 +25,8 @@ class LessonController extends AbstractController
      */
     public function index(Request $request, LessonRepository $repository, PaginatorInterface $paginator)
     {
-        $search = $request->query->get('search');
-        $queryBuilder = $repository->getWithSearchQueryBuilder($search);
         $pagination = $paginator->paginate(
-            $queryBuilder,
+            $repository->getWithSearchQueryBuilder($request->query->get('search')),
             $request->query->getInt('page', 1),
             10
         );
@@ -98,18 +96,5 @@ class LessonController extends AbstractController
         $em->flush();
         $this->addFlash('success', "Removed lesson of type $lesson");
         return $this->redirectToRoute('app_instructor_lessons');
-    }
-
-    /**
-     * @Route("/lesson/participants/{id}", name="app_instructor_participants")
-     */
-    public function participants(Lesson $lesson, MemberRepository $repository)
-    {
-        $participants = $repository->getMembersFrom($lesson);
-        return $this->render('views/instructor/participant/index.html.twig', [
-            'title' => 'Participants',
-            'members' => $participants,
-            'lesson' => $lesson,
-        ]);
     }
 }

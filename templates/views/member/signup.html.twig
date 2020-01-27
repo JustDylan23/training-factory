@@ -1,4 +1,5 @@
 {% extends 'base_crud.html.twig' %}
+
 {% block crud_title %}Available lessons{% endblock %}
 {% block crud_add_button %}{% endblock %}
 {% block crud_table_ths %}
@@ -21,7 +22,7 @@
 
 {% block crud_table_dropdown %}
     {% set full = entry.relations >= entry.max_relations %}
-    <a class="btn btn-{{full ? 'danger' : 'success'}}"
+    <a class="btn btn-{{full ? 'danger' : 'success'}} single-click"
        href="{{ full ? 'javascript:void(0)' : path('app_member_lesson_signup', {'id': entry.id}) }}"
     >
         {% if full %}
