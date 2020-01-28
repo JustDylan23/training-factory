@@ -2,8 +2,8 @@
 {% block crud_title %}Instructors{% endblock %}
 {% block crud_add_text %}Add instructor{% endblock %}
 {% block crud_href_add %}{{ path('app_admin_instructor_add') }}{% endblock %}
-{% block crud_href_edit %}{{ path('app_admin_instructor_edit', {'id': entry.id}) }}{% endblock %}
-{% block crud_href_delete %}{{ path('app_admin_instructor_remove', {'id': entry.id}) }}{% endblock %}
+{% block crud_href_edit %}{{ path('app_admin_instructor_edit', {id: entry.id}) }}{% endblock %}
+{% block crud_href_delete %}{{ path('app_admin_instructor_remove', {id: entry.id}) }}{% endblock %}
 {% block crud_table_ths %}
     <th>Name</th>
     <th>Email</th>
@@ -13,4 +13,11 @@
     <td>{{ entry.surname }}, {{ entry.firstname }} {{ entry.surnamePrepositions }}</td>
     <td>{{ entry.email }}</td>
     <td>{{ entry.hiringDate|date("m-d-Y") }}</td>
+{% endblock %}
+{% block crud_table_actions %}
+    {{ parent() }}
+    <a class="dropdown-item"
+       href="{{ path('app_admin_instructor_stats', {id: entry.id}) }}">
+        <i class="fas fa-chart-line"></i> Revenue
+    </a>
 {% endblock %}

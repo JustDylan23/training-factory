@@ -22,8 +22,8 @@
 
 {% block crud_table_dropdown %}
     {% set full = entry.relations >= entry.max_relations %}
-    <a class="btn btn-{{full ? 'danger' : 'success'}} single-click"
-       href="{{ full ? 'javascript:void(0)' : path('app_member_lesson_signup', {'id': entry.id}) }}"
+    <a class="btn btn-{{full ? 'danger disabled' : 'success'}} single-click"
+       href="{{ full ? 'javascript:void(0)' : path('app_member_lesson_signup', {id: entry.id}) }}"
     >
         {% if full %}
             <i class="far fa-times-circle"></i> full&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -33,26 +33,30 @@
     </a>
 {% endblock %}
 
-{% block crud_search_form_append %}
-    <button class="btn my-2 bg-white border" data-target="#demo" data-toggle="collapse" type="button">Show
-        search
-        options
-    </button>
-    <ul id="demo" class="list-group collapse">
-        <li class="list-group-item">
-            <div class="form-inline">
-                <label for="startDate">Starting from</label>
-                <input class="form-control ml-2"
-                       id="startDate"
-                       name="startDate"
-                       required
-                       type="datetime-local"
-                       value="{{ app.request.query.get('startDate')|default('now'|date("Y-m-d\\TH:i")) }}"
-                >
-            </div>
-        </li>
-        <li class="list-group-item">
-            <button class="btn btn-primary">Search</button>
-        </li>
-    </ul>
+{% block crud_search %}
+    {% embed 'components/searchbar.html.twig' %}
+        {% block search_form_append %}
+            <button class="btn my-2 bg-white border" data-target="#searchOptions" data-toggle="collapse" type="button">Show
+                search
+                options
+            </button>
+            <ul id="searchOptions" class="list-group collapse">
+                <li class="list-group-item">
+                    <div class="form-inline">
+                        <label for="startDate">Starting from</label>
+                        <input class="form-control ml-2"
+                               id="startDate"
+                               name="startDate"
+                               required
+                               type="datetime-local"
+                               value="{{ app.request.query.get('startDate')|default('now'|date("Y-m-d\\TH:i")) }}"
+                        >
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <button class="btn btn-primary">Search</button>
+                </li>
+            </ul>
+        {% endblock %}
+    {% endembed %}
 {% endblock %}

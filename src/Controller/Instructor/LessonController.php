@@ -7,6 +7,7 @@ use App\Entity\Lesson;
 use App\Form\LessonFormType;
 use App\Repository\LessonRepository;
 use App\Repository\MemberRepository;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -25,10 +26,15 @@ class LessonController extends AbstractController
      */
     public function index(Request $request, LessonRepository $repository, PaginatorInterface $paginator)
     {
+        $search = $request->query->get('search');
+        $startDate = $request->query->get('startDate');
+        if ($startDate) {
+            $startDate = DateTime::createFromFormat('Y-m-d\\TH:i', $startDate);
+            if (!$startDate) $startDate = null;
+        }
         $pagination = $paginator->paginate(
-            $repository->getWithSearchQueryBuilder($request->query->get('search')),
-            $request->query->getInt('page', 1),
-            10
+            $repository->getWithSearchQueryBuilder($search, $startDate),
+            $request->query->getInt('page', 1)
         );
 
         return $this->render('views/instructor/lesson/index.html.twig', [

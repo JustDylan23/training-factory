@@ -23,17 +23,7 @@
     {% endblock %}
 </head>
 <body class="d-flex flex-column min-vh-100">
-{#    {% for message in app.flashes('message') %}#}
 <div id="messages" style="position: absolute; right: 20px; top: 100px; z-index: 10000">
-    {#        <div class="toast">#}
-{#            <div class="toast-header">#}
-{#                Toast Header#}
-{#            </div>#}
-{#            <div class="toast-body">#}
-{#                {{ message }}#}
-{#            </div>#}
-{#        </div>#}
-{#    {% endfor %}#}
     {% for message in app.flashes('message') %}
         {% set content = message|split('|') %}
     <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-autohide="false">
@@ -48,7 +38,6 @@
         </div>
     </div>
     {% endfor %}
-
 </div>
 <div id="notifications" style="position: absolute; left: 20px; top: 100px; z-index: 10000">
     {% for label, messages in app.flashes(['warning', 'error', 'success']) %}

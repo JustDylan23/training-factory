@@ -35,7 +35,6 @@ class LessonController extends AbstractController
         $pagination = $paginator->paginate(
             $queryBuilder,
             $request->query->getInt('page', 1),
-            10
         );
 
         return $this->render('views/member/signup.html.twig', [
@@ -68,7 +67,6 @@ class LessonController extends AbstractController
         $pagination = $paginator->paginate(
             $queryBuilder,
             $request->query->getInt('page', 1),
-            10
         );
 
         return $this->render('views/member/lesson.html.twig', [

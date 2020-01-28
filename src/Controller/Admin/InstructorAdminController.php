@@ -26,8 +26,7 @@ class InstructorAdminController extends AbstractController
         $queryBuilder = $repository->getWithSearchQueryBuilder($search);
         $pagination = $paginator->paginate(
             $queryBuilder,
-            $request->query->getInt('page', 1),
-            10
+            $request->query->getInt('page', 1)
         );
         return $this->render('views/admin/instructor/index.html.twig', [
             'title' => 'Overview instructors',
@@ -90,5 +89,40 @@ class InstructorAdminController extends AbstractController
         $em->flush();
         $this->addFlash('success', "Removed instructor $instructor!");
         return $this->redirectToRoute('app_admin_instructors');
+    }
+
+    /**
+     * @Route("/instructor/stats/{id}", name="app_admin_instructor_stats")
+     *
+     * SELECT seq, user.email, COUNT(registration.member_id) AS registrations,
+     * CASE WHEN registration.member_id IS NOT NULL
+     * THEN SUM(training.costs) ELSE 0 END AS revenue
+     * FROM seq_1_to_12
+     * INNER JOIN user ON user.id = 22
+     * LEFT JOIN lesson ON lesson.instructor_id = user.id AND MONTH(lesson.time) = seq AND YEAR(lesson.time) = 2020
+     * LEFT JOIN registration on registration.lesson_id = lesson.id
+     * LEFT JOIN training ON training.id = lesson.training_id
+     * GROUP BY seq
+     */
+    public function statistics(Instructor $instructor, EntityManagerInterface $em)
+    {
+        $result = $em->getConnection()->executeQuery(
+            "
+            SELECT seq, COUNT(training.id) AS lessons, COUNT(registration.member_id) AS registrations,
+            CASE WHEN registration.member_id IS NOT NULL
+            THEN SUM(training.costs) ELSE 0 END AS revenue
+            FROM seq_1_to_12
+            INNER JOIN user ON user.id = 142
+            LEFT JOIN lesson ON lesson.instructor_id = user.id AND MONTH(lesson.time) = seq AND YEAR(lesson.time) = 2020
+            LEFT JOIN registration on registration.lesson_id = lesson.id
+            LEFT JOIN training ON training.id = lesson.training_id
+            GROUP BY seq
+            "
+        )->fetchAll();
+        return $this->render('views/admin/instructor/stats.html.twig', [
+            'title' => 'Edit instructor',
+            'instructor' => $instructor,
+            'months' => $result
+        ]);
     }
 }

@@ -33,7 +33,6 @@ class MemberAdminController extends AbstractController
         $pagination = $paginator->paginate(
             $queryBuilder,
             $request->query->getInt('page', 1),
-            10
         );
 
         return $this->render('views/admin/member/index.html.twig', [

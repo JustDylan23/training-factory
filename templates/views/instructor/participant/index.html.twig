@@ -1,19 +1,21 @@
-{% extends 'content_base.html.twig' %}
+{% extends 'base_crud.html.twig' %}
+{% block crud_title %}{{ lesson }} - {{ lesson.time|date() }}{% endblock %}
+{% block crud_add_text %}Sign member up{% endblock %}
+{% block crud_href_add %}{{ path('app_instructor_participants_add_overview', {id: lesson.id}) }}{% endblock %}
+{% block crud_href_delete %}{{ path('app_instructor_lesson_remove', {id: entry.id}) }}{% endblock %}
+{% block crud_table_ths %}
+    <th>Name</th>
+    <th>Email</th>
+{% endblock %}
+{% block crud_table_entries %}
+    {# @var entry \App\Entity\Member #}
+    <td>{{ entry.firstname }} {{ entry.surnamePrepositions }} {{ entry.surname }}</td>
+    <td>{{ entry.email }}</td>
+{% endblock %}
 
-{% block content_body %}
-    <ul class="list-group">
-        <li class="list-group-item active d-flex">
-            <h3 class="mr-auto">{{ lesson }} - {{ lesson.time|date() }}</h3>
-            <a class="btn btn-outline-light" href="{{ path('app_instructor_participants_add_overview', {id: lesson.id}) }}">
-                Add member +
-            </a>
-        </li>
-        {% for member in members %}
-            <li class="list-group-item">
-                <p>{{ member }}</p>
-            </li>
-        {% else %}
-            <p>No participants found</p>
-        {% endfor %}
-    </ul>
+{% block crud_table_actions %}
+    <a class="dropdown-item"
+       href="{{ path('app_instructor_participants', {id: entry.id}) }}">
+        <i class="fas fa-sign-out-alt"></i> Sign out
+    </a>
 {% endblock %}

@@ -1,0 +1,17 @@
+<form class="pb-3" autocomplete="off">
+    <div class="input-group">
+        <input
+                name="search"
+                class="form-control"
+                value="{{ app.request.query.get('search') }}"
+                placeholder="Search..."
+        >
+        <div class="input-group-append">
+            <button type="submit"
+                    class="btn btn-outline-primary">
+                <span class="fa fa-search"></span>
+            </button>
+        </div>
+    </div>
+    {% block search_form_append %}{% endblock %}
+</form>

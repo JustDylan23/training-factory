@@ -24,9 +24,10 @@
             {% if is_granted('ROLE_MEMBER') %}
                 {{ self.navLink(current, '<i class="fas fa-sign-in-alt"></i> Sign up for lessons', 'app_member_signup') }}
                 {{ self.navLink(current, '<i class="far fa-calendar-alt"></i> My lessons', 'app_member_lessons') }}
-                {{ self.navLink(current, '<i class="fas fa-list"></i> Our lessons', 'app_public_trainings') }}
+                {{ self.navLink(current, '<i class="fas fa-list"></i> Training courses', 'app_public_trainings') }}
             {% elseif is_granted('ROLE_INSTRUCTOR') %}
                 {{ self.navLink(current, '<i class="fas fa-list"></i> Lessons', 'app_instructor_lessons') }}
+                {{ self.navLink(current, '<i class="fas fa-list"></i> Training courses', 'app_public_trainings') }}
             {% elseif is_granted('ROLE_ADMIN') %}
                 {{ self.navLink(current, '<i class="fas fa-hands-helping"></i> Instructors', 'app_admin_instructors') }}
                 {{ self.navLink(current, '<i class="fas fa-users"></i> Members', 'app_admin_members') }}

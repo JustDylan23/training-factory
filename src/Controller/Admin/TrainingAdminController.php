@@ -30,7 +30,6 @@ class TrainingAdminController extends AbstractController
         $pagination = $paginator->paginate(
             $queryBuilder,
             $request->query->getInt('page', 1),
-            10
         );
 
         return $this->render('views/admin/training/index.html.twig', [

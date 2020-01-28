@@ -1,7 +1,7 @@
 {% extends 'content_base.html.twig' %}
 
 {% block content_body %}
-    <div class="w-100 bg-light p-2 rounded border">
+    <div class="bg-light p-2 rounded border">
         <div class="d-flex mb-2">
             <h3 class="mr-auto ml-1">{% block crud_title %}{% endblock %}</h3>
             {% block crud_add_button %}
@@ -9,23 +9,9 @@
                     <i class="fas fa-plus-circle"></i> {% block crud_add_text %}Add{% endblock %}</a>
             {% endblock %}
         </div>
-        <form class="pb-3">
-            <div class="input-group">
-                <input
-                        name="search"
-                        class="form-control"
-                        value="{{ app.request.query.get('search') }}"
-                        placeholder="Search..."
-                >
-                <div class="input-group-append">
-                    <button type="submit"
-                            class="btn btn-outline-primary">
-                        <span class="fa fa-search"></span>
-                    </button>
-                </div>
-            </div>
-            {% block crud_search_form_append %}{% endblock %}
-        </form>
+        {% block crud_search %}
+            {% include 'components/searchbar.html.twig' %}
+        {% endblock %}
     </div>
     <div class="table-responsive">
         <table class="table table-hover {% block crud_table_styling %}{% endblock %}">

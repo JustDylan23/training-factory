@@ -5,11 +5,15 @@ namespace App\Controller\Instructor;
 
 use App\Entity\Lesson;
 use App\Entity\Member;
+use App\Entity\Registration;
 use App\Repository\MemberRepository;
+use App\Repository\RegistrationRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -20,12 +24,17 @@ class LessonParticipantsController extends AbstractController
     /**
      * @Route("/lesson/participants/{id}", name="app_instructor_participants")
      */
-    public function participants(Lesson $lesson, MemberRepository $repository)
+    public function participants(Lesson $lesson, MemberRepository $repository, Request $request, PaginatorInterface $paginator)
     {
-        $participants = $repository->getMembersFrom($lesson);
+        dd($this->getUser());
+        $pagination = $paginator->paginate(
+            $repository->getWithSearchQueryBuilder(null),
+            $request->query->getInt('page', 1),
+        );
+
         return $this->render('views/instructor/participant/index.html.twig', [
             'title' => 'Participants',
-            'members' => $participants,
+            'pagination' => $pagination,
             'lesson' => $lesson,
         ]);
     }
@@ -35,15 +44,13 @@ class LessonParticipantsController extends AbstractController
      */
     public function addParticipant(Lesson $lesson, MemberRepository $repository, Request $request, PaginatorInterface $paginator)
     {
-        $paginator->paginate(
-            $repository->getMembersNotIn($lesson, $request->query->get('search')),
+        $pagination = $paginator->paginate(
+            $repository->getQueryBuilderMembersNotInLessonWithSearch($lesson, $request->query->get('search')),
             $request->query->getInt('page', 1),
-            10
         );
-        $participants = $repository->getMembersFrom($lesson);
-        return $this->render('views/instructor/participant/index.html.twig', [
-            'title' => 'Participants',
-            'members' => $participants,
+        return $this->render('views/instructor/participant/add.html.twig', [
+            'title' => 'Add participants',
+            'pagination' => $pagination,
             'lesson' => $lesson,
         ]);
     }
@@ -51,13 +58,17 @@ class LessonParticipantsController extends AbstractController
     /**
      * @Route("/lesson/participants/{lesson}/add/{member}", name="app_instructor_participants_add")
      */
-    public function addParticipantFunction(Lesson $lesson, Member $member, MemberRepository $repository)
+    public function addParticipantFunction(Lesson $lesson, Member $member, EntityManagerInterface $em)
     {
-        $participants = $repository->getMembersFrom($lesson);
-        return $this->render('views/instructor/participant/index.html.twig', [
-            'title' => 'Participants',
-            'members' => $participants,
-            'lesson' => $lesson,
-        ]);
+        $registration = new Registration();
+        $registration->setLesson($lesson);
+        $registration->setMember($member);
+
+        $em->persist($registration);
+        $em->flush();
+
+        $this->addFlash('success', "Signed $member up for lesson of type $lesson");
+
+        return $this->redirectToRoute('app_instructor_participants', ['id' => $lesson->getId()]);
     }
 }

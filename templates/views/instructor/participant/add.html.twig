@@ -1,0 +1,43 @@
+{% extends 'content_base.html.twig' %}
+
+{% block content_body %}
+    {% include 'components/searchbar.html.twig' %}
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for member in pagination %}
+            {# @var member \App\Entity\Member#}
+            <tr>
+                <td>{{ member.firstname }} {{ member.surnamePrepositions }} {{ member.surname }}</td>
+                <td>{{ member.email }}</td>
+                <td>
+                    <a class="btn btn-primary single-click" href="{{ path('app_instructor_participants_add', {
+                        member: member.id,
+                        lesson: lesson.id
+                    }) }}">Sign up</a>
+                </td>
+            </tr>
+        {% else %}
+            <p>No participants found</p>
+        {% endfor %}
+        </tbody>
+    </table>
+    <div class="d-flex px-2">
+        <div class="mr-auto">
+            showing
+            {% set perpage = pagination.getItemNumberPerPage %}
+            {% set total = pagination.getTotalItemCount %}
+            <strong>{{ perpage > total ? total : perpage }}</strong>
+            out of
+            <strong>{{ total }}</strong>
+            results
+        </div>
+        {{ knp_pagination_render(pagination) }}
+    </div>
+{% endblock %}

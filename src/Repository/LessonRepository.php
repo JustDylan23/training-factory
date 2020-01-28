@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Instructor;
 use App\Entity\Lesson;
 use App\Entity\User;
 use DateTimeInterface;
@@ -22,14 +23,24 @@ class LessonRepository extends ServiceEntityRepository
         parent::__construct($registry, Lesson::class);
     }
 
-    public function getWithSearchQueryBuilder(?string $search)
+    public function getWithSearchQueryBuilder(?string $search, ?DateTimeInterface $startDate)
     {
         $qb = $this->createQueryBuilder('l')
             ->innerJoin('l.training', 't')
-            ->addSelect('t');
+            ->addSelect('t')
+            ->innerJoin('l.instructor', 'i')
+            ->addSelect('i');
+//        if (!$showAll) {
+//            $qb->andWhere('i = :id')
+//                ->setParameter('id', $instructor);
+//        }
         if ($search) {
             $qb->andWhere($qb->expr()->like('t.name', ':term'))
                 ->setParameter('term', '%' . $search . '%');
+        }
+        if ($startDate) {
+            $qb->andWhere($qb->expr()->gt('l.time', ':since'))
+                ->setParameter('since', $startDate);
         }
         return $qb->orderBy('l.time', 'ASC');
     }

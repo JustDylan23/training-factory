@@ -1,0 +1,68 @@
+{% extends 'content_base.html.twig' %}
+
+{% block content_body %}
+    <div class="bg-light text-info rounded p-3 mb-4">
+        <h1>Instructor statistics</h1>
+        <p>
+            You can view information about the instructor here in a simple table
+        </p>
+    </div>
+    <table class="table table-sm shadow-sm mb-4">
+        <thead class="thead-light">
+        <tr>
+            <th colspan="2">Info</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>Name</td>
+            <td>{{ instructor.firstname }} {{ instructor.surnamePrepositions }} {{ instructor.surname }}</td>
+        </tr>
+        <tr>
+            <td>Email</td>
+            <td>{{ instructor.email }}</td>
+        </tr>
+        <tr>
+            <td>Salary</td>
+            <td>{{ instructor.salary }}</td>
+        </tr>
+        <tr>
+            <td>Hiring date</td>
+            <td>{{ instructor.hiringDate|date('m-d-Y') }}</td>
+        </tr>
+        </tbody>
+    </table>
+    <div class="shadow-sm">
+        <table class="table table-sm">
+            <thead class="thead-light">
+            <tr>
+                <th>Month</th>
+                <th>Lessons</th>
+                <th>Registrations</th>
+                <th>Revenue</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% set total = 0 %}
+            {% for month in months %}
+                {% set total = month.revenue + total %}
+                <tr>
+                    <td>{{ month.seq }}</td>
+                    <td>
+                        {{ month.lessons == 0 ? '-' : month.lessons }}
+                    </td>
+                    <td>
+                        {{ month.registrations == 0 ? '-' : month.registrations }}
+                    </td>
+                    <td>&euro; {{ month.revenue }}</td>
+                </tr>
+            {% endfor %}
+            <tr>
+                <td colspan="3"></td>
+                <td><strong>Total: &euro; {{ total|number_format(2) }}</strong></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
+

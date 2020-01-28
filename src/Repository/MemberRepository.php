@@ -7,6 +7,7 @@ use App\Entity\Member;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\Query\Expr\Join;
+use Doctrine\ORM\QueryBuilder;
 
 /**
  * @method Member|null find($id, $lockMode = null, $lockVersion = null)
@@ -25,19 +26,10 @@ class MemberRepository extends ServiceEntityRepository
     {
         $qb = $this->createQueryBuilder('m');
         if ($term) {
-            $qb->andWhere('m.firstname LIKE :term OR m.surname LIKE :term OR m.surnamePrepositions LIKE :term')
+            $qb->andWhere('m.firstname LIKE :term OR m.surname LIKE :term OR m.surnamePrepositions LIKE :term OR m.email LIKE :term')
                 ->setParameter('term', '%' . $term . '%');
         }
         return $qb->orderBy('m.surname', 'ASC');
-    }
-
-    public function getMembersFrom(Lesson $lesson)
-    {
-        return $qb = $this->createQueryBuilder('m')
-            ->innerJoin('m.registrations', 'r', Join::WITH, 'r.lesson = :lesson')
-            ->setParameter('lesson', $lesson)
-            ->getQuery()
-            ->getResult();
     }
 
     public function getQueryBuilderMembersNotInLessonWithSearch(Lesson $lesson, ?string $search)
@@ -46,9 +38,14 @@ class MemberRepository extends ServiceEntityRepository
             ->leftJoin('m.registrations', 'r', Join::WITH, 'r.lesson = :lesson')
             ->setParameter('lesson', $lesson)
             ->andWhere('r.member is null');
+        return $this->search($qb, $search);
+    }
+
+    private function search(QueryBuilder &$qb, ?string $search): QueryBuilder {
         if ($search) {
-            $qb->andWhere('m.firstname LIKE :term OR m.surname LIKE :term OR m.surnamePrepositions LIKE :term')
+            $qb->andWhere('m.firstname LIKE :term OR m.surname LIKE :term OR m.surnamePrepositions LIKE :term OR m.email LIKE :term')
                 ->setParameter('term', '%' . $search . '%');
         }
+        return $qb;
     }
 }

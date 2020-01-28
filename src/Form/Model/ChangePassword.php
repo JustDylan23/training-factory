@@ -41,6 +41,4 @@ class ChangePassword
     {
         $this->newPassword = $newPassword;
     }
-
-
 }
