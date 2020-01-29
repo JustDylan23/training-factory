@@ -56,6 +56,8 @@
                     </td>
                     <td>&euro; {{ month.revenue }}</td>
                 </tr>
+            {% else %}
+                <div class="text-danger"><div class="badge badge-danger">not found</div> The instructor didn't plan any lessons this year </div>
             {% endfor %}
             <tr>
                 <td colspan="3"></td>
