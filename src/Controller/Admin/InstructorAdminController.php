@@ -108,11 +108,10 @@ class InstructorAdminController extends AbstractController
     {
         $result = $em->getConnection()->executeQuery(
             "
-            SELECT seq, COUNT(training.id) AS lessons, COUNT(registration.member_id) AS registrations,
-            CASE WHEN registration.member_id IS NOT NULL
-            THEN SUM(training.costs) ELSE 0 END AS revenue
+            SELECT seq, COUNT(registration.member_id) AS registrations,
+            CASE WHEN registration.member_id IS NOT NULL THEN SUM(training.costs) ELSE 0 END AS revenue
             FROM seq_1_to_12
-            INNER JOIN user ON user.id = 142
+            INNER JOIN user ON user.id = {$instructor->getId()}
             LEFT JOIN lesson ON lesson.instructor_id = user.id AND MONTH(lesson.time) = seq AND YEAR(lesson.time) = 2020
             LEFT JOIN registration on registration.lesson_id = lesson.id
             LEFT JOIN training ON training.id = lesson.training_id

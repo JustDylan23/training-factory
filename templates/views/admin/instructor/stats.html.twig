@@ -2,7 +2,7 @@
 
 {% block content_body %}
     <div class="bg-light text-info rounded p-3 mb-4">
-        <h1>Instructor statistics</h1>
+        <h1>Instructor statistics 2020</h1>
         <p>
             You can view information about the instructor here in a simple table
         </p>
@@ -37,7 +37,7 @@
             <thead class="thead-light">
             <tr>
                 <th>Month</th>
-                <th>Lessons</th>
+
                 <th>Registrations</th>
                 <th>Revenue</th>
             </tr>
@@ -49,9 +49,6 @@
                 <tr>
                     <td>{{ month.seq }}</td>
                     <td>
-                        {{ month.lessons == 0 ? '-' : month.lessons }}
-                    </td>
-                    <td>
                         {{ month.registrations == 0 ? '-' : month.registrations }}
                     </td>
                     <td>&euro; {{ month.revenue }}</td>
@@ -60,7 +57,7 @@
                 <div class="text-danger"><div class="badge badge-danger">not found</div> The instructor didn't plan any lessons this year </div>
             {% endfor %}
             <tr>
-                <td colspan="3"></td>
+                <td colspan="2"></td>
                 <td><strong>Total: &euro; {{ total|number_format(2) }}</strong></td>
             </tr>
             </tbody>

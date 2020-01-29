@@ -3,10 +3,10 @@
 
 namespace App\Controller\Instructor;
 
+use App\Entity\Instructor;
 use App\Entity\Lesson;
 use App\Form\LessonFormType;
 use App\Repository\LessonRepository;
-use App\Repository\MemberRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
@@ -32,8 +32,12 @@ class LessonController extends AbstractController
             $startDate = DateTime::createFromFormat('Y-m-d\\TH:i', $startDate);
             if (!$startDate) $startDate = null;
         }
+        $showAll = $request->query->get('showAll') == 0;
+        /** @var Instructor $instructor */
+        $instructor = $showAll ? $this->getUser() : null;
+//        dd($repository->getWithSearchQueryBuilder($search, $startDate, $instructor)->getQuery()->getResult());
         $pagination = $paginator->paginate(
-            $repository->getWithSearchQueryBuilder($search, $startDate),
+            $repository->getWithSearchQueryBuilder($search, $startDate, $instructor),
             $request->query->getInt('page', 1)
         );
 
@@ -74,8 +78,12 @@ class LessonController extends AbstractController
     /**
      * @Route("/lesson/edit/{id}", name="app_instructor_lesson_edit")
      */
-    public function editLesson(Lesson $lesson, Request $request, EntityManagerInterface $em)
+    public function editLesson($id, LessonRepository $lessonRepository, Request $request, EntityManagerInterface $em)
     {
+        $lesson = $lessonRepository->findOneBy(['id' => $id]);
+        if (!$lesson) {
+            throw $this->createNotFoundException();
+        }
         $form = $this->createForm(LessonFormType::class, $lesson);
         $form->handleRequest($request);
 
@@ -96,8 +104,12 @@ class LessonController extends AbstractController
     /**
      * @Route("/lesson/remove/{id}", name="app_instructor_lesson_remove")
      */
-    public function removeLesson(Lesson $lesson, EntityManagerInterface $em)
+    public function removeLesson($id, LessonRepository $lessonRepository, EntityManagerInterface $em)
     {
+        $lesson = $lessonRepository->findOneBy(['id' => $id]);
+        if (!$lesson) {
+            throw $this->createNotFoundException();
+        }
         $em->remove($lesson);
         $em->flush();
         $this->addFlash('success', "Removed lesson of type $lesson");

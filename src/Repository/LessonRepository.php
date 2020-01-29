@@ -23,17 +23,18 @@ class LessonRepository extends ServiceEntityRepository
         parent::__construct($registry, Lesson::class);
     }
 
-    public function getWithSearchQueryBuilder(?string $search, ?DateTimeInterface $startDate)
+    public function getWithSearchQueryBuilder(?string $search, ?DateTimeInterface $startDate, ?Instructor $instructor)
     {
         $qb = $this->createQueryBuilder('l')
+            ->select('l.id, t.name, t.duration, l.location, l.time, i.email, l.maxPeople, COUNT(r_count.lesson) AS relations')
             ->innerJoin('l.training', 't')
-            ->addSelect('t')
             ->innerJoin('l.instructor', 'i')
-            ->addSelect('i');
-//        if (!$showAll) {
-//            $qb->andWhere('i = :id')
-//                ->setParameter('id', $instructor);
-//        }
+            ->leftJoin('l.registrations', 'r_count')
+            ->groupBy('l.id');
+        if ($instructor) {
+            $qb->andWhere('i = :id')
+                ->setParameter('id', $instructor->getId());
+        }
         if ($search) {
             $qb->andWhere($qb->expr()->like('t.name', ':term'))
                 ->setParameter('term', '%' . $search . '%');

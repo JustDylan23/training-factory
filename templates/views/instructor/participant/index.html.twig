@@ -1,8 +1,7 @@
 {% extends 'base_crud.html.twig' %}
-{% block crud_title %}{{ lesson }} - {{ lesson.time|date() }}{% endblock %}
+{% block crud_title %}{{ lesson }} - {{ lesson.time|date() }} - {{ lesson.instructor }}{% endblock %}
 {% block crud_add_text %}Sign member up{% endblock %}
-{% block crud_href_add %}{{ path('app_instructor_participants_add_overview', {id: lesson.id}) }}{% endblock %}
-{% block crud_href_delete %}{{ path('app_instructor_lesson_remove', {id: entry.id}) }}{% endblock %}
+{% block crud_href_add %}{{ path('app_instructor_participants_select', {id: lesson.id}) }}{% endblock %}
 {% block crud_table_ths %}
     <th>Name</th>
     <th>Email</th>
@@ -13,9 +12,9 @@
     <td>{{ entry.email }}</td>
 {% endblock %}
 
-{% block crud_table_actions %}
-    <a class="dropdown-item"
-       href="{{ path('app_instructor_participants', {id: entry.id}) }}">
+{% block crud_table_dropdown %}
+    <a class="btn btn-danger single-click"
+       href="{{ path('app_instructor_participants_remove', {lesson: lesson.id, member: entry.id}) }}">
         <i class="fas fa-sign-out-alt"></i> Sign out
     </a>
 {% endblock %}

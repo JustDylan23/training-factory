@@ -25,14 +25,11 @@ class MemberRepository extends ServiceEntityRepository
     public function getWithSearchQueryBuilder(?string $term)
     {
         $qb = $this->createQueryBuilder('m');
-        if ($term) {
-            $qb->andWhere('m.firstname LIKE :term OR m.surname LIKE :term OR m.surnamePrepositions LIKE :term OR m.email LIKE :term')
-                ->setParameter('term', '%' . $term . '%');
-        }
-        return $qb->orderBy('m.surname', 'ASC');
+        return $this->search($qb, $term)
+            ->orderBy('m.surname', 'ASC');
     }
 
-    public function getQueryBuilderMembersNotInLessonWithSearch(Lesson $lesson, ?string $search)
+    public function getQueryBuilderMembersNotInLesson(Lesson $lesson, ?string $search)
     {
         $qb = $this->createQueryBuilder('m')
             ->leftJoin('m.registrations', 'r', Join::WITH, 'r.lesson = :lesson')
@@ -41,11 +38,20 @@ class MemberRepository extends ServiceEntityRepository
         return $this->search($qb, $search);
     }
 
-    private function search(QueryBuilder &$qb, ?string $search): QueryBuilder {
+    private function search(QueryBuilder &$qb, ?string $search): QueryBuilder
+    {
         if ($search) {
             $qb->andWhere('m.firstname LIKE :term OR m.surname LIKE :term OR m.surnamePrepositions LIKE :term OR m.email LIKE :term')
                 ->setParameter('term', '%' . $search . '%');
         }
         return $qb;
+    }
+
+    public function getQueryBuilderMembersInLesson(Lesson $lesson, $search)
+    {
+        $qb = $this->createQueryBuilder('m')
+            ->innerJoin('m.registrations', 'r', Join::WITH, 'r.lesson = :lesson')
+            ->setParameter('lesson', $lesson->getId());
+        return $this->search($qb, $search);
     }
 }

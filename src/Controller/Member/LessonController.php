@@ -23,7 +23,7 @@ class LessonController extends AbstractController
     /**
      * @Route("/signup", name="app_member_signup")
      */
-    public function index(Request $request, LessonRepository $repository, PaginatorInterface $paginator)
+    public function availableLessons(Request $request, LessonRepository $repository, PaginatorInterface $paginator)
     {
         $search = $request->query->get('search');
         $startDate = $request->query->get('startDate');
@@ -80,7 +80,7 @@ class LessonController extends AbstractController
      */
     public function signout(Lesson $lesson, EntityManagerInterface $em, RegistrationRepository $repository)
     {
-        $registration = $repository->findOneBy(['lesson' => $lesson->getId()]);
+        $registration = $repository->findOneBy(['lesson' => $lesson->getId(), 'member' => $this->getUser()->getId()]);
         $em->remove($registration);
         $em->flush();
         $this->addFlash('success', "Signed out of lesson of type $lesson!");

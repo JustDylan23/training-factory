@@ -10,14 +10,15 @@
     <th>Location</th>
     <th>Time</th>
     <th>instructor</th>
+    <th>Registrations</th>
 {% endblock %}
 {% block crud_table_entries %}
-    {# @var entry \App\Entity\Lesson #}
-    <td>{{ entry.training.name }}</td>
-    <td>{{ entry.training.duration }} {{ entry.training.duration == 1 ? 'minute' : 'minutes' }}</td>
+    <td>{{ entry.name }}</td>
+    <td>{{ entry.duration }} {{ entry.duration == 1 ? 'minute' : 'minutes' }}</td>
     <td>{{ entry.location }}</td>
-    <td>{{ entry.time|date("n-d-Y H:i") }}-{{ entry.time|date_modify("+" ~ entry.training.duration ~ 'minutes')|date("H:i") }}</td>
-    <td>{{ entry.instructor.email }}</td>
+    <td>{{ entry.time|date("n-d-Y H:i") }}-{{ entry.time|date_modify("+" ~ entry.duration ~ 'minutes')|date("H:i") }}</td>
+    <td>{{ entry.email }}</td>
+    <td>{{ entry.relations }} out of {{ entry.maxPeople }}</td>
 {% endblock %}
 
 {% block crud_table_actions %}
@@ -58,10 +59,10 @@
                         </div>
                         <div class="col">
                             <select class="form-control" id="showSelect" name="showAll">
-                                <option value="">
+                                <option value="0">
                                     Lessons that I planned
                                 </option>
-                                <option {{ app.request.query.get('showAll') ? 'selected' }} value="1">
+                                <option {{ (app.request.query.get('showAll') != 0) ? 'selected' }} value="1">
                                     All planned lessons
                                 </option>
                             </select>
